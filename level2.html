@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Samin 🎀 - مرحله ۲</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,200;14..32,300;14..32,400;14..32,600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    /* ====== استایل‌ها ====== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Vazirmatn', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    body {
+      background: #0b0a0e;
+      color: #ece7f0;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+    }
+    
+    /* ====== صفحه بازی ====== */
+    #game-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: #08070b;
+      z-index: 10;
+      padding: 0.5rem;
+    }
+    .game-container {
+      width: 100%;
+      max-width: 500px;
+      height: 90vh;
+      max-height: 800px;
+      position: relative;
+    }
+    .game-surface {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 40% 40%, #1f1a2a, #0b0910);
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+      position: relative;
+      overflow: hidden;
+    }
+    .game-surface .glare {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.015), transparent 50%);
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      z-index: 2;
+    }
+
+    /* ====== حروف پیدا شده ====== */
+    .found-letters {
+      position: absolute;
+      top: 0.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      background: rgba(10, 8, 14, 0.4);
+      backdrop-filter: blur(12px);
+      padding: 0.4rem 1rem;
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+      min-height: 40px;
+      min-width: 30px;
+    }
+    .found-letters .letter {
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: #f0c8d8;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      text-shadow: 0 0 30px rgba(200, 100, 150, 0.15);
+      animation: letterAppear 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .found-letters .letter.hidden {
+      display: none;
+    }
+    @keyframes letterAppear {
+      0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+      60% { transform: scale(1.3) rotate(5deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .found-letters .empty-text {
+      color: #3d2f4a;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      font-weight: 200;
+    }
+    .found-letters .heart-icon {
+      color: #f0b0d0;
+      font-size: 0.7rem;
+      margin: 0 0.15rem;
+      opacity: 0.3;
+    }
+
+    /* ====== بخش کلمات پیدا شده ====== */
+    .found-words {
+      position: absolute;
+      top: 3.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: rgba(10, 8, 14, 0.3);
+      backdrop-filter: blur(8px);
+      padding: 0.3rem 0.8rem;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+    .found-words .word-badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: #6d5b7e;
+      transition: all 0.5s ease;
+    }
+    .found-words .word-badge.found {
+      color: #f0c8d8;
+      border-color: rgba(200, 100, 150, 0.2);
+      background: rgba(200, 100, 150, 0.05);
+    }
+
+    /* ====== پازل حروف ====== */
+    .letters-grid {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 8px;
+      padding: 10px;
+      padding-top: 90px;
+      padding-bottom: 50px;
+      z-index: 3;
+    }
+    .letter-tile {
+      background: rgba(30, 24, 44, 0.4);
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: #d0c4e0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      touch-action: none;
+      aspect-ratio: 1 / 1;
+      font-family: 'Georgia', 'Times New Roman', serif;
+    }
+    .letter-tile:hover {
+      background: rgba(50, 40, 70, 0.5);
+      border-color: rgba(200, 180, 230, 0.1);
+    }
+    .letter-tile.selected {
+      border-color: rgba(200, 150, 220, 0.5);
+      box-shadow: 0 0 20px rgba(200, 100, 150, 0.1);
+      transform: scale(1.05);
+    }
+    .letter-tile.found {
+      opacity: 0.3;
+      cursor: default;
+      pointer-events: none;
+      transform: scale(0.9);
+      filter: grayscale(1);
+    }
+    .letter-tile.wrong {
+      animation: wrongPulse 0.5s ease;
+    }
+    @keyframes wrongPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.9); background: rgba(180, 50, 80, 0.3); }
+    }
+
+    .game-hint {
+      position: absolute;
+      bottom: 0.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #6d5b7e;
+      font-size: 0.5rem;
+      letter-spacing: 0.25em;
+      background: rgba(10, 8, 14, 0.5);
+      backdrop-filter: blur(6px);
+      padding: 0.2rem 1.2rem;
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 5;
+    }
+    .progress-text {
+      position: absolute;
+      bottom: 2.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #4d405f;
+      font-size: 0.45rem;
+      letter-spacing: 0.2em;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* ====== صفحه موفقیت ====== */
+    .success-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.8rem;
+      background: rgba(8, 7, 11, 0.85);
+      backdrop-filter: blur(18px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+      border-radius: 28px;
+      padding: 2rem;
+      text-align: center;
+      z-index: 10;
+    }
+    .success-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .success-overlay .msg {
+      font-size: clamp(1rem, 2.5vw, 1.6rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: #e5daf0;
+      max-width: 500px;
+    }
+    .success-overlay .sub {
+      font-size: 0.7rem;
+      color: #a697bb;
+      letter-spacing: 0.25em;
+    }
+    .success-overlay .letter-reveal {
+      font-size: clamp(4rem, 12vw, 7rem);
+      font-weight: 200;
+      color: #f0c8d8;
+      text-shadow: 0 0 80px rgba(200, 100, 150, 0.2);
+      animation: letterAppear 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+      font-family: 'Georgia', 'Times New Roman', serif;
+    }
+    .timer-text {
+      font-size: 0.8rem;
+      color: #6d5b7e;
+      letter-spacing: 0.2em;
+      margin-top: 0.5rem;
+    }
+
+    /* ====== ریسپانسیو ====== */
+    @media (max-width: 600px) {
+      .game-container {
+        max-width: 100%;
+        height: 92vh;
+        max-height: 700px;
+      }
+      .game-surface {
+        border-radius: 18px;
+      }
+      .letters-grid {
+        gap: 5px;
+        padding: 6px;
+        padding-top: 78px;
+        padding-bottom: 40px;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+      }
+      .letter-tile {
+        font-size: 1.2rem;
+        border-radius: 8px;
+        aspect-ratio: 1 / 1.1;
+      }
+      .game-hint {
+        font-size: 0.4rem;
+        bottom: 0.5rem;
+        padding: 0.15rem 0.8rem;
+      }
+      .success-overlay {
+        border-radius: 18px;
+      }
+      .found-letters {
+        padding: 0.25rem 0.7rem;
+        min-height: 32px;
+        top: 0.5rem;
+        gap: 0.15rem;
+      }
+      .found-letters .letter {
+        font-size: 1rem;
+      }
+      .found-letters .heart-icon {
+        font-size: 0.5rem;
+      }
+      .found-letters .empty-text {
+        font-size: 0.45rem;
+      }
+      .found-words {
+        top: 3.2rem;
+        padding: 0.2rem 0.6rem;
+        gap: 0.5rem;
+      }
+      .found-words .word-badge {
+        font-size: 0.55rem;
+        padding: 0.15rem 0.5rem;
+      }
+      .progress-text {
+        bottom: 2.2rem;
+        font-size: 0.4rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .game-container {
+        height: 95vh;
+        max-height: 600px;
+      }
+      .letters-grid {
+        gap: 4px;
+        padding: 4px;
+        padding-top: 68px;
+        padding-bottom: 34px;
+      }
+      .letter-tile {
+        font-size: 1rem;
+        aspect-ratio: 1 / 1.1;
+      }
+    }
+
+    .confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      overflow: hidden;
+    }
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0.8;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+
+
+
+
+    /* ====== ریسپانسیو کامل ====== */
+
+/* تبلت و موبایل بزرگ */
+@media (max-width: 768px) {
+  .game-container {
+    max-width: 100%;
+    height: 85vh;
+    max-height: 650px;
+  }
+  .game-surface {
+    border-radius: 20px;
+  }
+  .letters-grid {
+    gap: 6px;
+    padding: 8px;
+    padding-top: 85px;
+    padding-bottom: 45px;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+  }
+  .letter-tile {
+    font-size: 1.4rem;
+    border-radius: 8px;
+    aspect-ratio: 1 / 1.1;
+  }
+  .found-letters {
+    padding: 0.3rem 0.8rem;
+    min-height: 34px;
+    top: 0.5rem;
+    gap: 0.2rem;
+  }
+  .found-letters .letter {
+    font-size: 1.1rem;
+  }
+  .found-letters .heart-icon {
+    font-size: 0.55rem;
+  }
+  .found-letters .empty-text {
+    font-size: 0.5rem;
+  }
+  .found-words {
+    top: 3.5rem;
+    padding: 0.25rem 0.7rem;
+    gap: 0.6rem;
+  }
+  .found-words .word-badge {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.5rem;
+  }
+  .game-hint {
+    font-size: 0.45rem;
+    bottom: 0.6rem;
+    padding: 0.15rem 0.8rem;
+  }
+  .progress-text {
+    bottom: 2.4rem;
+    font-size: 0.4rem;
+  }
+  .success-overlay {
+    border-radius: 20px;
+    padding: 1.5rem;
+  }
+  .success-overlay .letter-reveal {
+    font-size: clamp(3rem, 8vw, 5rem);
+  }
+  .success-overlay .msg {
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
+  }
+  .timer-text {
+    font-size: 0.7rem;
+  }
+}
+
+/* موبایل متوسط */
+@media (max-width: 600px) {
+  #game-screen {
+    padding: 0.3rem;
+  }
+  .game-container {
+    height: 92vh;
+    max-height: 600px;
+  }
+  .game-surface {
+    border-radius: 16px;
+  }
+  .letters-grid {
+    gap: 5px;
+    padding: 6px;
+    padding-top: 75px;
+    padding-bottom: 38px;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+  }
+  .letter-tile {
+    font-size: 1.1rem;
+    border-radius: 6px;
+    border-width: 1.5px;
+    aspect-ratio: 1 / 1.1;
+  }
+  .found-letters {
+    padding: 0.25rem 0.6rem;
+    min-height: 30px;
+    top: 0.4rem;
+    gap: 0.15rem;
+    border-radius: 40px;
+  }
+  .found-letters .letter {
+    font-size: 0.95rem;
+  }
+  .found-letters .heart-icon {
+    font-size: 0.5rem;
+    margin: 0 0.1rem;
+  }
+  .found-letters .empty-text {
+    font-size: 0.45rem;
+  }
+  .found-words {
+    top: 3rem;
+    padding: 0.2rem 0.6rem;
+    gap: 0.5rem;
+  }
+  .found-words .word-badge {
+    font-size: 0.5rem;
+    padding: 0.12rem 0.4rem;
+  }
+  .game-hint {
+    font-size: 0.4rem;
+    bottom: 0.5rem;
+    padding: 0.12rem 0.6rem;
+  }
+  .progress-text {
+    bottom: 2rem;
+    font-size: 0.35rem;
+  }
+  .success-overlay {
+    border-radius: 16px;
+    padding: 1.2rem;
+    gap: 0.5rem;
+  }
+  .success-overlay .letter-reveal {
+    font-size: clamp(2.5rem, 7vw, 4rem);
+  }
+  .success-overlay .msg {
+    font-size: clamp(0.7rem, 1.8vw, 1rem);
+  }
+  .success-overlay .sub {
+    font-size: 0.55rem;
+  }
+  .btn-ghost {
+    font-size: 0.55rem;
+    padding: 0.25rem 1.2rem;
+  }
+  .timer-text {
+    font-size: 0.6rem;
+  }
+}
+
+/* موبایل کوچک (زیر 400px) */
+@media (max-width: 400px) {
+  #game-screen {
+    padding: 0.2rem;
+  }
+  .game-container {
+    height: 95vh;
+    max-height: 550px;
+  }
+  .game-surface {
+    border-radius: 12px;
+  }
+  .letters-grid {
+    gap: 4px;
+    padding: 4px;
+    padding-top: 62px;
+    padding-bottom: 32px;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+  }
+  .letter-tile {
+    font-size: 0.9rem;
+    border-radius: 5px;
+    border-width: 1px;
+    aspect-ratio: 1 / 1.1;
+  }
+  .found-letters {
+    padding: 0.2rem 0.5rem;
+    min-height: 26px;
+    top: 0.3rem;
+    gap: 0.1rem;
+    border-radius: 30px;
+  }
+  .found-letters .letter {
+    font-size: 0.8rem;
+  }
+  .found-letters .heart-icon {
+    font-size: 0.4rem;
+    margin: 0 0.05rem;
+  }
+  .found-letters .empty-text {
+    font-size: 0.4rem;
+  }
+  .found-words {
+    top: 2.6rem;
+    padding: 0.15rem 0.5rem;
+    gap: 0.3rem;
+  }
+  .found-words .word-badge {
+    font-size: 0.45rem;
+    padding: 0.1rem 0.3rem;
+  }
+  .game-hint {
+    font-size: 0.35rem;
+    bottom: 0.4rem;
+    padding: 0.1rem 0.5rem;
+  }
+  .progress-text {
+    bottom: 1.7rem;
+    font-size: 0.3rem;
+  }
+  .success-overlay {
+    border-radius: 12px;
+    padding: 1rem;
+    gap: 0.4rem;
+  }
+  .success-overlay .letter-reveal {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+  }
+  .success-overlay .msg {
+    font-size: clamp(0.6rem, 1.5vw, 0.9rem);
+  }
+  .success-overlay .sub {
+    font-size: 0.5rem;
+  }
+  .btn-ghost {
+    font-size: 0.5rem;
+    padding: 0.2rem 1rem;
+  }
+  .timer-text {
+    font-size: 0.5rem;
+  }
+}
+
+/* صفحه نمایش بسیار کوچک (زیر 320px) */
+@media (max-width: 320px) {
+  .game-container {
+    height: 98vh;
+    max-height: 500px;
+  }
+  .letters-grid {
+    gap: 3px;
+    padding: 3px;
+    padding-top: 55px;
+    padding-bottom: 28px;
+  }
+  .letter-tile {
+    font-size: 0.75rem;
+    border-radius: 4px;
+    aspect-ratio: 1 / 1.1;
+  }
+  .found-letters {
+    padding: 0.15rem 0.4rem;
+    min-height: 22px;
+  }
+  .found-letters .letter {
+    font-size: 0.7rem;
+  }
+  .found-words {
+    top: 2.2rem;
+  }
+  .found-words .word-badge {
+    font-size: 0.4rem;
+  }
+  .game-hint {
+    font-size: 0.3rem;
+    padding: 0.08rem 0.4rem;
+  }
+  .progress-text {
+    font-size: 0.25rem;
+    bottom: 1.5rem;
+  }
+}
+
+/* ارتفاع کم (برای صفحه‌های کوتاه) */
+@media (max-height: 700px) {
+  .game-container,
+  .mirror-container {
+    height: 95vh;
+    max-height: 550px;
+  }
+  .letters-grid {
+    padding-top: 70px;
+    padding-bottom: 35px;
+  }
+  .puzzle-grid {
+    padding-top: 50px;
+    padding-bottom: 35px;
+  }
+  .letter-tile {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .game-container,
+  .mirror-container {
+    height: 98vh;
+    max-height: 480px;
+  }
+  .letters-grid {
+    padding-top: 60px;
+    padding-bottom: 30px;
+    gap: 4px;
+  }
+  .puzzle-grid {
+    padding-top: 42px;
+    padding-bottom: 30px;
+    gap: 3px;
+  }
+  .letter-tile {
+    font-size: 0.8rem;
+  }
+  .found-letters {
+    padding: 0.15rem 0.5rem;
+    min-height: 24px;
+  }
+  .found-letters .letter {
+    font-size: 0.8rem;
+  }
+  .found-words {
+    top: 2.8rem;
+    padding: 0.15rem 0.5rem;
+  }
+  .found-words .word-badge {
+    font-size: 0.45rem;
+  }
+}
+  </style>
+</head>
+<body>
+
+  <div id="game-screen">
+    <div class="game-container">
+      <div class="game-surface" id="gameSurface">
+        <div class="glare"></div>
+        
+        <!-- ====== حروف پیدا شده ====== -->
+        <div class="found-letters" id="foundLetters">
+          <span class="heart-icon">💗</span>
+          <span class="letter" id="letter0">د</span>
+          <span class="letter hidden" id="letter1">خ</span>
+          <span class="letter hidden" id="letter2">ت</span>
+          <span class="letter hidden" id="letter3">ر</span>
+          <span class="letter hidden" id="letter4">م</span>
+          <span class="heart-icon">💗</span>
+        </div>
+        
+        <!-- ====== کلمات پیدا شده ====== -->
+        <div class="found-words" id="foundWords">
+          <span class="word-badge" id="word1">❓ کلمه ۱</span>
+          <span class="word-badge" id="word2">❓ کلمه ۲</span>
+          <span class="word-badge" id="word3">❓ کلمه ۳</span>
+        </div>
+        
+        <div class="letters-grid" id="lettersGrid"></div>
+        <div class="progress-text" id="progressText">0 / 3 کلمه پیدا شد</div>
+        <div class="game-hint">✦  کلمات پنهان رو پیدا کن  ✦</div>
+        
+        <!-- ====== صفحه موفقیت ====== -->
+        <div class="success-overlay" id="successOverlay">
+          <div class="letter-reveal" id="letterReveal">خ</div>
+          <div class="msg">"حرف دوم پیدا شد..."</div>
+          <div class="sub">✨ مرحله ۲ کامل شد ✨</div>
+          <div class="timer-text" id="timerText">در حال انتقال به مرحله بعد...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ====== کلمات هدف ======
+      const targetWords = [
+        { word: 'خوژگل', color: '#ff6b9d' },
+        { word: 'عشقم', color: '#6bcfff' },
+        { word: 'زندگیم', color: '#6bff9d' }
+      ];
+
+      const allLetters = ['خ', 'و', 'ژ', 'گ', 'ل', 'ع', 'ش', 'ق', 'م', 'ز', 'ن', 'د','گ', 'ی','م'];
+      
+      let foundWords = [false, false, false];
+      let selectedLetters = [];
+      let letterTiles = [];
+      let totalFound = 0;
+      let gameCompleted = false;
+      let timerInterval = null;
+
+      // ====== المنت‌ها ======
+      const lettersGrid = document.getElementById('lettersGrid');
+      const progressText = document.getElementById('progressText');
+      const successOverlay = document.getElementById('successOverlay');
+      const timerText = document.getElementById('timerText');
+      const foundWords1 = document.getElementById('word1');
+      const foundWords2 = document.getElementById('word2');
+      const foundWords3 = document.getElementById('word3');
+
+      function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function launchConfetti() {
+        const container = document.createElement('div');
+        container.className = 'confetti-container';
+        const colors = ['#f7b0d0', '#ffd6e8', '#f0c8d8', '#d4a0c0', '#ff8aac', '#ff6b9d'];
+        for (let i = 0; i < 60; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.width = (5 + Math.random() * 10) + 'px';
+          confetti.style.height = (5 + Math.random() * 10) + 'px';
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+          confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
+          confetti.style.animationDelay = Math.random() * 2 + 's';
+          container.appendChild(confetti);
+        }
+        document.body.appendChild(container);
+        setTimeout(() => container.remove(), 5000);
+      }
+
+      function redirectToNextLevel() {
+        let countdown = 3;
+        timerText.textContent = `⏳ ${countdown} ثانیه تا مرحله بعد...`;
+        
+        timerInterval = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
+            timerText.textContent = `⏳ ${countdown} ثانیه تا مرحله بعد...`;
+          } else {
+            clearInterval(timerInterval);
+            timerText.textContent = '🔄 در حال انتقال...';
+            // ====== انتقال به مرحله بعد ======
+            window.location.href = 'level3.html';
+          }
+        }, 1000);
+      }
+
+      function initGame() {
+        lettersGrid.innerHTML = '';
+        letterTiles = [];
+        selectedLetters = [];
+        foundWords = [false, false, false];
+        totalFound = 0;
+        gameCompleted = false;
+        successOverlay.classList.remove('show');
+        progressText.textContent = '0 / 3 کلمه پیدا شد';
+        
+        // ریست کلمات پیدا شده
+        [foundWords1, foundWords2, foundWords3].forEach((el, i) => {
+          el.textContent = `❓ کلمه ${i + 1}`;
+          el.classList.remove('found');
+          el.style.borderColor = '';
+          el.style.color = '';
+        });
+
+        // ایجاد حروف
+        let letters = [...allLetters];
+        while (letters.length < 30) {
+          letters.push(allLetters[Math.floor(Math.random() * allLetters.length)]);
+        }
+        shuffleArray(letters);
+        letters = letters.slice(0, 30);
+
+        const isMobile = window.innerWidth <= 600;
+        const cols = isMobile ? 5 : 6;
+        const rows = Math.ceil(letters.length / cols);
+        lettersGrid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        lettersGrid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+        letters.forEach((char, index) => {
+          const tile = document.createElement('div');
+          tile.className = 'letter-tile';
+          tile.textContent = char;
+          tile.dataset.char = char;
+          tile.dataset.index = index;
+          tile.dataset.found = 'false';
+          
+          let belongsTo = -1;
+          targetWords.forEach((tw, i) => {
+            if (tw.word.includes(char)) {
+              belongsTo = i;
+            }
+          });
+          tile.dataset.belongsTo = belongsTo;
+          
+          tile.addEventListener('click', () => onTileClick(tile));
+          tile.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            onTileClick(tile);
+          }, { passive: false });
+          
+          lettersGrid.appendChild(tile);
+          letterTiles.push(tile);
+        });
+        
+        showRandomLetters();
+      }
+
+      function showRandomLetters() {
+        targetWords.forEach((tw, wordIdx) => {
+          const chars = tw.word.split('');
+          const indices = [];
+          letterTiles.forEach((tile, idx) => {
+            if (chars.includes(tile.dataset.char) && tile.dataset.found === 'false') {
+              indices.push(idx);
+            }
+          });
+          const shuffled = shuffleArray([...indices]);
+          const selected = shuffled.slice(0, 3);
+          selected.forEach(idx => {
+            if (letterTiles[idx]) {
+              letterTiles[idx].style.borderColor = targetWords[wordIdx].color;
+              letterTiles[idx].style.boxShadow = `0 0 15px ${targetWords[wordIdx].color}33`;
+            }
+          });
+        });
+      }
+
+      function onTileClick(tile) {
+        if (gameCompleted) return;
+        if (tile.dataset.found === 'true') return;
+        if (selectedLetters.includes(tile)) {
+          tile.classList.remove('selected');
+          selectedLetters = selectedLetters.filter(t => t !== tile);
+          return;
+        }
+        
+        tile.classList.add('selected');
+        selectedLetters.push(tile);
+        checkWords();
+      }
+
+      function checkWords() {
+        const selectedChars = selectedLetters.map(t => t.dataset.char).join('');
+        
+        targetWords.forEach((tw, index) => {
+          if (foundWords[index]) return;
+          
+          if (selectedChars === tw.word) {
+            foundWords[index] = true;
+            totalFound++;
+            progressText.textContent = `${totalFound} / 3 کلمه پیدا شد`;
+            
+            selectedLetters.forEach(t => {
+              t.dataset.found = 'true';
+              t.classList.add('found');
+              t.classList.remove('selected');
+              t.style.borderColor = tw.color;
+              t.style.boxShadow = `0 0 20px ${tw.color}44`;
+            });
+            
+            const badges = [foundWords1, foundWords2, foundWords3];
+            badges[index].textContent = `✅ ${tw.word}`;
+            badges[index].classList.add('found');
+            badges[index].style.borderColor = tw.color;
+            badges[index].style.color = tw.color;
+            
+            selectedLetters = [];
+            launchConfetti();
+            
+            if (totalFound === 3) {
+              setTimeout(() => {
+                gameCompleted = true;
+                successOverlay.classList.add('show');
+                launchConfetti();
+                redirectToNextLevel();
+              }, 600);
+            }
+            return;
+          }
+        });
+        
+        if (selectedLetters.length >= 6) {
+          selectedLetters.forEach(t => {
+            t.classList.remove('selected');
+            t.classList.add('wrong');
+            setTimeout(() => t.classList.remove('wrong'), 500);
+          });
+          selectedLetters = [];
+        }
+      }
+
+      // ====== شروع بازی ======
+      initGame();
+
+      // ====== ریسپانسیو ======
+      window.addEventListener('resize', () => {
+        // بازی رو ریست نکن، فقط گرید رو به‌روز کن
+      });
+
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Samin 🎀 - مرحله ۳</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,200;14..32,300;14..32,400;14..32,600&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Vazirmatn', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    body {
+      background: #0b0a0e;
+      color: #ece7f0;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    #game-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: #08070b;
+      z-index: 10;
+      padding: 0.5rem;
+      animation: fadeIn 0.8s ease;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.98); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 500px;
+      height: 90vh;
+      max-height: 800px;
+      position: relative;
+    }
+    .game-surface {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 40% 40%, #1f1a2a, #0b0910);
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .game-surface .glare {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.015), transparent 50%);
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      z-index: 2;
+    }
+
+    /* ====== حروف پیدا شده ====== */
+    .found-letters {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      background: rgba(10, 8, 14, 0.4);
+      backdrop-filter: blur(12px);
+      padding: 0.4rem 1rem;
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+      min-height: 40px;
+      min-width: 30px;
+      margin: 0.8rem auto 0.5rem;
+      flex-shrink: 0;
+      width: fit-content;
+    }
+    .found-letters .letter {
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: #f0c8d8;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      text-shadow: 0 0 30px rgba(200, 100, 150, 0.15);
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .found-letters .letter.hidden {
+      display: none;
+    }
+    .found-letters .letter.found {
+      animation: letterPop 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    @keyframes letterPop {
+      0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+      60% { transform: scale(1.4) rotate(6deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .found-letters .heart-icon {
+      color: #f0b0d0;
+      font-size: 0.7rem;
+      margin: 0 0.15rem;
+      opacity: 0.3;
+    }
+
+    /* ====== گرید ایموجی‌ها (اسکرول‌پذیر) ====== */
+    .emoji-grid-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 6px 10px 10px 10px;
+      margin-top: 2px;
+      margin-bottom: 4px;
+      z-index: 3;
+      position: relative;
+      scroll-behavior: smooth;
+    }
+    .emoji-grid-wrapper::-webkit-scrollbar {
+      width: 4px;
+    }
+    .emoji-grid-wrapper::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+    }
+    .emoji-grid-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(200, 100, 150, 0.2);
+      border-radius: 10px;
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+    .emoji-tile {
+      background: rgba(30, 24, 44, 0.25);
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      touch-action: none;
+      aspect-ratio: 1 / 1;
+      will-change: transform;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      min-height: 60px;
+    }
+    .emoji-tile:hover {
+      background: rgba(50, 40, 70, 0.4);
+      border-color: rgba(200, 180, 230, 0.08);
+      transform: scale(1.02);
+    }
+    .emoji-tile:active {
+      transform: scale(0.94);
+    }
+    .emoji-tile.wrong {
+      animation: shake 0.45s ease;
+      background: rgba(180, 50, 80, 0.15);
+      border-color: #b44a6a;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      60% { transform: translateX(8px); }
+    }
+    .emoji-tile.found-success {
+      animation: foundPulse 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      border-color: #ff6b9d;
+      box-shadow: 0 0 40px rgba(255, 107, 157, 0.25);
+      transform: scale(1.1);
+      background: rgba(255, 107, 157, 0.08);
+    }
+    @keyframes foundPulse {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.3); box-shadow: 0 0 60px rgba(255, 107, 157, 0.4); }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1.1); }
+    }
+
+    /* ====== فوتر ====== */
+    .game-footer {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      background: rgba(10, 8, 14, 0.5);
+      backdrop-filter: blur(6px);
+      padding: 0.25rem 1.2rem;
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      margin: 0 auto 0.6rem;
+      flex-shrink: 0;
+      width: fit-content;
+    }
+    .game-footer .hint {
+      color: #6d5b7e;
+      font-size: 0.5rem;
+      letter-spacing: 0.2em;
+      white-space: nowrap;
+    }
+    .game-footer .attempts {
+      color: #f0c8d8;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      background: rgba(255,255,255,0.03);
+      padding: 0.1rem 0.8rem;
+      border-radius: 40px;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .game-footer .attempts span {
+      color: #ff6b9d;
+      font-weight: 400;
+    }
+
+    /* ====== صفحه موفقیت ====== */
+    .success-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.8rem;
+      background: rgba(8, 7, 11, 0.85);
+      backdrop-filter: blur(18px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+      border-radius: 28px;
+      padding: 2rem;
+      text-align: center;
+      z-index: 10;
+    }
+    .success-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .success-overlay .letter-reveal {
+      font-size: clamp(4rem, 12vw, 7rem);
+      font-weight: 200;
+      color: #f0c8d8;
+      text-shadow: 0 0 80px rgba(200, 100, 150, 0.2);
+      animation: letterPop 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+      font-family: 'Georgia', 'Times New Roman', serif;
+    }
+    .success-overlay .msg {
+      font-size: clamp(1rem, 2.5vw, 1.6rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: #e5daf0;
+      max-width: 500px;
+    }
+    .success-overlay .sub {
+      font-size: 0.7rem;
+      color: #a697bb;
+      letter-spacing: 0.25em;
+    }
+    .timer-text {
+      font-size: 0.8rem;
+      color: #6d5b7e;
+      letter-spacing: 0.2em;
+      margin-top: 0.5rem;
+    }
+
+    /* ====== کانفتی ====== */
+    .confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      overflow: hidden;
+    }
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0.9;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ====== ریسپانسیو ====== */
+    @media (max-width: 768px) {
+      .game-container {
+        max-width: 100%;
+        height: 85vh;
+        max-height: 650px;
+      }
+      .game-surface {
+        border-radius: 20px;
+      }
+      .emoji-grid {
+        gap: 6px;
+      }
+      .emoji-tile {
+        font-size: 2rem;
+        border-radius: 10px;
+        min-height: 55px;
+      }
+      .found-letters {
+        padding: 0.3rem 0.8rem;
+        min-height: 34px;
+        margin: 0.6rem auto 0.4rem;
+      }
+      .found-letters .letter {
+        font-size: 1.1rem;
+      }
+      .game-footer .hint {
+        font-size: 0.45rem;
+      }
+      .game-footer .attempts {
+        font-size: 0.55rem;
+        padding: 0.1rem 0.6rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .game-container {
+        height: 92vh;
+        max-height: 600px;
+      }
+      .game-surface {
+        border-radius: 16px;
+      }
+      .emoji-grid {
+        gap: 5px;
+      }
+      .emoji-tile {
+        font-size: 1.8rem;
+        border-radius: 8px;
+        border-width: 1.5px;
+        min-height: 50px;
+      }
+      .found-letters {
+        padding: 0.25rem 0.7rem;
+        min-height: 30px;
+        gap: 0.2rem;
+        margin: 0.5rem auto 0.3rem;
+      }
+      .found-letters .letter {
+        font-size: 1rem;
+      }
+      .game-footer {
+        padding: 0.2rem 0.8rem;
+        gap: 0.8rem;
+        margin-bottom: 0.5rem;
+      }
+      .game-footer .hint {
+        font-size: 0.4rem;
+      }
+      .game-footer .attempts {
+        font-size: 0.5rem;
+        padding: 0.1rem 0.5rem;
+      }
+      .success-overlay {
+        border-radius: 16px;
+        padding: 1.2rem;
+      }
+      .success-overlay .letter-reveal {
+        font-size: clamp(3rem, 8vw, 5rem);
+      }
+      .timer-text {
+        font-size: 0.7rem;
+      }
+      .emoji-grid-wrapper {
+        padding: 4px 6px 6px 6px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .game-container {
+        height: 95vh;
+        max-height: 550px;
+      }
+      .game-surface {
+        border-radius: 12px;
+      }
+      .emoji-grid {
+        gap: 4px;
+      }
+      .emoji-tile {
+        font-size: 1.5rem;
+        border-radius: 6px;
+        border-width: 1px;
+        min-height: 42px;
+      }
+      .found-letters {
+        padding: 0.2rem 0.5rem;
+        min-height: 26px;
+        gap: 0.15rem;
+        margin: 0.4rem auto 0.2rem;
+      }
+      .found-letters .letter {
+        font-size: 0.85rem;
+      }
+      .found-letters .heart-icon {
+        font-size: 0.5rem;
+      }
+      .game-footer {
+        padding: 0.15rem 0.6rem;
+        gap: 0.6rem;
+        margin-bottom: 0.4rem;
+      }
+      .game-footer .hint {
+        font-size: 0.35rem;
+      }
+      .game-footer .attempts {
+        font-size: 0.45rem;
+        padding: 0.05rem 0.4rem;
+      }
+      .success-overlay {
+        border-radius: 12px;
+        padding: 1rem;
+        gap: 0.5rem;
+      }
+      .success-overlay .letter-reveal {
+        font-size: clamp(2.5rem, 7vw, 4rem);
+      }
+      .success-overlay .msg {
+        font-size: 0.9rem;
+      }
+      .timer-text {
+        font-size: 0.6rem;
+      }
+      .emoji-grid-wrapper {
+        padding: 3px 4px 4px 4px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .emoji-tile {
+        font-size: 1.2rem;
+        min-height: 36px;
+      }
+      .found-letters .letter {
+        font-size: 0.7rem;
+      }
+    }
+
+    @media (max-height: 700px) {
+      .game-container {
+        height: 95vh;
+        max-height: 550px;
+      }
+      .emoji-tile {
+        font-size: 1.8rem;
+        min-height: 50px;
+      }
+      .emoji-grid {
+        gap: 5px;
+      }
+    }
+    @media (max-height: 600px) {
+      .emoji-tile {
+        font-size: 1.4rem;
+        min-height: 40px;
+      }
+      .emoji-grid {
+        gap: 4px;
+      }
+      .found-letters {
+        min-height: 24px;
+        padding: 0.15rem 0.5rem;
+        margin: 0.3rem auto 0.2rem;
+      }
+      .found-letters .letter {
+        font-size: 0.8rem;
+      }
+      .game-footer {
+        padding: 0.15rem 0.6rem;
+        margin-bottom: 0.3rem;
+      }
+      .emoji-grid-wrapper {
+        padding: 2px 4px 4px 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-screen">
+    <div class="game-container">
+      <div class="game-surface" id="gameSurface">
+        <div class="glare"></div>
+
+        <!-- ====== حروف پیدا شده ====== -->
+        <div class="found-letters" id="foundLetters">
+          <span class="heart-icon">💗</span>
+          <span class="letter found" id="letter0">د</span>
+          <span class="letter found" id="letter1">خ</span>
+          <span class="letter hidden" id="letter2">ت</span>
+          <span class="letter hidden" id="letter3">ر</span>
+          <span class="letter hidden" id="letter4">م</span>
+          <span class="heart-icon">💗</span>
+        </div>
+
+        <!-- ====== گرید ایموجی‌ها (اسکرول‌پذیر) ====== -->
+        <div class="emoji-grid-wrapper" id="emojiGridWrapper">
+          <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+
+        <!-- ====== فوتر ====== -->
+        <div class="game-footer">
+          <span class="attempts">تلاش: <span id="attemptCount">0</span></span>
+          <span class="hint">✦ پیدا کن کدوم یکی فرق داره... 💗 ✦</span>
+        </div>
+
+        <!-- ====== صفحه موفقیت ====== -->
+        <div class="success-overlay" id="successOverlay">
+          <div class="letter-reveal" id="letterReveal">ت</div>
+          <div class="msg">"حرف سوم پیدا شد... 💕"</div>
+          <div class="sub">✨ مرحله ۳ کامل شد ✨</div>
+          <div class="timer-text" id="timerText">در حال انتقال به مرحله بعد...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ====== تنظیمات ======
+      const TOTAL_EMOJIS = 300; // 6×5
+      const MAIN_EMOJI = '💗';
+      const TARGET_EMOJI = '🎀';
+      const EMOJI_GRID = document.getElementById('emojiGrid');
+      const ATTEMPT_SPAN = document.getElementById('attemptCount');
+      const SUCCESS_OVERLAY = document.getElementById('successOverlay');
+      const TIMER_TEXT = document.getElementById('timerText');
+      const LETTER_T = document.getElementById('letter2');
+
+      let attempts = 0;
+      let gameCompleted = false;
+      let targetIndex = -1;
+      let timerInterval = null;
+
+      // ====== شافل ======
+      function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      // ====== کانفتی ======
+      function launchConfetti() {
+        const container = document.createElement('div');
+        container.className = 'confetti-container';
+        const colors = ['#ff6b9d', '#ffb6c1', '#ffd1dc', '#ff8aac', '#ff4d7a', '#ffa5b9'];
+        for (let i = 0; i < 60; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.width = (5 + Math.random() * 10) + 'px';
+          confetti.style.height = (5 + Math.random() * 10) + 'px';
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+          confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
+          confetti.style.animationDelay = Math.random() * 2 + 's';
+          container.appendChild(confetti);
+        }
+        document.body.appendChild(container);
+        setTimeout(() => container.remove(), 5000);
+      }
+
+      // ====== انتقال به مرحله بعد ======
+      function redirectToNextLevel() {
+        let countdown = 3;
+        TIMER_TEXT.textContent = `⏳ ${countdown} ثانیه تا مرحله بعد...`;
+        timerInterval = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
+            TIMER_TEXT.textContent = `⏳ ${countdown} ثانیه تا مرحله بعد...`;
+          } else {
+            clearInterval(timerInterval);
+            TIMER_TEXT.textContent = '🔄 در حال انتقال...';
+            window.location.href = 'level4.html';
+          }
+        }, 1000);
+      }
+
+      // ====== شروع بازی ======
+      function initGame() {
+        EMOJI_GRID.innerHTML = '';
+        attempts = 0;
+        ATTEMPT_SPAN.textContent = '0';
+        gameCompleted = false;
+        SUCCESS_OVERLAY.classList.remove('show');
+        LETTER_T.classList.add('hidden');
+
+        // ساخت آرایه ایموجی‌ها
+        let emojis = [];
+        for (let i = 0; i < TOTAL_EMOJIS; i++) {
+          emojis.push(MAIN_EMOJI);
+        }
+        // قرار دادن هدف در جای رندوم
+        targetIndex = Math.floor(Math.random() * TOTAL_EMOJIS);
+        emojis[targetIndex] = TARGET_EMOJI;
+
+        // همیشه ۶ ستون
+        EMOJI_GRID.style.gridTemplateColumns = 'repeat(6, 1fr)';
+
+        // ساخت کارت‌ها
+        emojis.forEach((emoji, index) => {
+          const tile = document.createElement('div');
+          tile.className = 'emoji-tile';
+          tile.textContent = emoji;
+          tile.dataset.index = index;
+          tile.dataset.isTarget = (index === targetIndex) ? 'true' : 'false';
+          tile.addEventListener('click', () => onTileClick(tile));
+          tile.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            onTileClick(tile);
+          }, { passive: false });
+          EMOJI_GRID.appendChild(tile);
+        });
+      }
+
+      // ====== کلیک روی کارت ======
+      function onTileClick(tile) {
+        if (gameCompleted) return;
+
+        const isTarget = tile.dataset.isTarget === 'true';
+
+        if (!isTarget) {
+          // اشتباه
+          attempts++;
+          ATTEMPT_SPAN.textContent = attempts;
+          tile.classList.add('wrong');
+          setTimeout(() => tile.classList.remove('wrong'), 500);
+          return;
+        }
+
+        // درست
+        gameCompleted = true;
+        tile.classList.add('found-success');
+        launchConfetti();
+
+        // نمایش حرف "ت"
+        LETTER_T.classList.remove('hidden');
+        LETTER_T.classList.add('found');
+
+        // نمایش اورلی
+        setTimeout(() => {
+          SUCCESS_OVERLAY.classList.add('show');
+          redirectToNextLevel();
+        }, 500);
+      }
+
+      // ====== شروع ======
+      initGame();
+
+    })();
+  </script>
+</body>
+</html>

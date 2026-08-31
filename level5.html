@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Samin 🎀 - مرحله ۵</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,200;14..32,300;14..32,400;14..32,600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Vazirmatn', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: #0b0a0e;
+            color: #ece7f0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        #game-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: #08070b;
+            z-index: 10;
+            padding: 0.5rem;
+            animation: fadeIn 0.8s ease;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 520px;
+            height: 92vh;
+            max-height: 800px;
+            position: relative;
+        }
+        .game-surface {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 40% 40%, #1f1a2a, #0b0910);
+            border-radius: 28px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 0.6rem 0.6rem 0.4rem 0.6rem;
+        }
+        .game-surface .glare {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.015), transparent 50%);
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            z-index: 2;
+        }
+
+        /* ====== حروف پیدا شده ====== */
+        .found-letters {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            background: rgba(10, 8, 14, 0.4);
+            backdrop-filter: blur(12px);
+            padding: 0.3rem 0.9rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+            min-height: 34px;
+            flex-shrink: 0;
+            width: fit-content;
+            margin: 0 auto 0.3rem;
+        }
+        .found-letters .letter {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: #f0c8d8;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            text-shadow: 0 0 30px rgba(200, 100, 150, 0.15);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .found-letters .letter.hidden {
+            display: none;
+        }
+        .found-letters .letter.found {
+            animation: letterPop 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .found-letters .letter.reveal {
+            display: inline-block;
+            animation: letterPop 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        @keyframes letterPop {
+            0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+            60% { transform: scale(1.4) rotate(6deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .found-letters .heart-icon {
+            color: #f0b0d0;
+            font-size: 0.65rem;
+            margin: 0 0.15rem;
+            opacity: 0.3;
+        }
+
+        /* ====== قلب پیشرفت ====== */
+        .heart-progress-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin: 0.1rem auto 0.3rem;
+            position: relative;
+            z-index: 3;
+            width: 100%;
+        }
+        .heart-progress {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            font-size: 2.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a1f3a;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.05);
+            transition: all 0.5s ease;
+        }
+        .heart-progress .heart-bg {
+            position: absolute;
+            inset: 0;
+            font-size: 3.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a1f3a;
+            filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.05));
+            transition: all 0.5s ease;
+        }
+        .heart-progress .heart-fill {
+            position: absolute;
+            inset: 0;
+            font-size: 3.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff6b9d;
+            clip-path: inset(100% 0 0 0);
+            transition: clip-path 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            filter: drop-shadow(0 0 30px rgba(255, 107, 157, 0.2));
+        }
+        .heart-progress .heart-fill.partial {
+            clip-path: inset(0 0 0 0);
+        }
+        .heart-progress .heart-fill.complete {
+            clip-path: inset(0 0 0 0);
+            animation: heartGlow 1.2s infinite alternate;
+        }
+        @keyframes heartGlow {
+            0% { filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.3)); }
+            100% { filter: drop-shadow(0 0 60px rgba(255, 107, 157, 0.6)); }
+        }
+        .heart-progress .heart-label {
+            position: absolute;
+            bottom: -1.2rem;
+            font-size: 0.45rem;
+            color: #6d5b7e;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+            font-weight: 200;
+        }
+        .heart-progress .heart-count {
+            position: absolute;
+            font-size: 0.6rem;
+            color: #f0c8d8;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        /* ====== نوار پیشرفت زیر قلب ====== */
+        .progress-bar-wrap {
+            width: 70%;
+            max-width: 240px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            margin: 0.1rem auto 0.3rem;
+            flex-shrink: 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 3;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff6b9d, #ffd700);
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* ====== گرید قاب‌ها ====== */
+        .frames-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            flex: 1;
+            padding: 4px 2px 8px 2px;
+            z-index: 3;
+            min-height: 0;
+            align-content: center;
+        }
+        .frame-tile {
+            background: #1a1225;
+            border-radius: 16px;
+            border: 2px solid rgba(212, 175, 55, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            touch-action: none;
+            aspect-ratio: 1 / 1.1;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            min-height: 80px;
+        }
+        .frame-tile:hover {
+            transform: scale(1.03);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+        .frame-tile:active {
+            transform: scale(0.96);
+        }
+        .frame-tile .frame-number {
+            position: absolute;
+            top: 0.4rem;
+            left: 0.6rem;
+            font-size: 0.55rem;
+            color: rgba(212, 175, 55, 0.2);
+            font-weight: 200;
+            letter-spacing: 0.1em;
+        }
+        .frame-tile .frame-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.1rem;
+            width: 100%;
+            height: 100%;
+            transition: all 0.5s ease;
+        }
+        .frame-tile .frame-content .question-mark {
+            font-size: 3rem;
+            color: rgba(212, 175, 55, 0.15);
+            font-weight: 200;
+            transition: all 0.4s ease;
+        }
+        .frame-tile .frame-content .frame-emoji {
+            font-size: 2.8rem;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.1));
+        }
+        .frame-tile .frame-content .frame-label {
+            font-size: 0.5rem;
+            color: rgba(212, 175, 55, 0.12);
+            letter-spacing: 0.15em;
+            margin-top: 0.1rem;
+        }
+        .frame-tile .frame-content .frame-desc {
+            font-size: 0.45rem;
+            color: rgba(255, 255, 255, 0.05);
+            letter-spacing: 0.05em;
+            text-align: center;
+            padding: 0 0.3rem;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        .frame-tile.solved {
+            border-color: #ffd700;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.12), inset 0 0 40px rgba(255, 215, 0, 0.03);
+            background: rgba(26, 18, 37, 0.8);
+        }
+        .frame-tile.solved .frame-content .question-mark {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        .frame-tile.solved .frame-content .frame-emoji {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .frame-tile.solved .frame-content .frame-desc {
+            opacity: 1;
+            color: rgba(255, 215, 0, 0.2);
+        }
+        .frame-tile.solved .frame-content .frame-label {
+            color: rgba(212, 175, 55, 0.3);
+        }
+        .frame-tile.solved::after {
+            content: '✨';
+            position: absolute;
+            bottom: 0.3rem;
+            right: 0.5rem;
+            font-size: 0.8rem;
+            opacity: 0.3;
+            animation: sparkle 1.5s infinite alternate;
+        }
+        @keyframes sparkle {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            100% { opacity: 0.6; transform: scale(1.2); }
+        }
+        .frame-tile.locked {
+            cursor: not-allowed;
+            opacity: 0.4;
+            filter: grayscale(0.5);
+        }
+        .frame-tile.locked:hover {
+            transform: none;
+        }
+        .frame-tile.wrong-anim {
+            animation: frameShake 0.5s ease;
+            border-color: #ff1744;
+        }
+        @keyframes frameShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            60% { transform: translateX(8px); }
+        }
+        .frame-tile .solve-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.08), transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+        .frame-tile.solved .solve-glow {
+            opacity: 1;
+        }
+
+        /* ====== وضعیت پایین صفحه ====== */
+        .game-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: rgba(10, 8, 14, 0.4);
+            backdrop-filter: blur(6px);
+            padding: 0.2rem 0.8rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            margin: 0.1rem auto 0.1rem;
+            flex-shrink: 0;
+            width: fit-content;
+            position: relative;
+            z-index: 3;
+        }
+        .game-footer .hint {
+            color: #6d5b7e;
+            font-size: 0.45rem;
+            letter-spacing: 0.2em;
+            white-space: nowrap;
+            animation: pulseHint 2.5s infinite alternate;
+        }
+        @keyframes pulseHint {
+            0% { opacity: 0.4; }
+            100% { opacity: 0.9; }
+        }
+        .game-footer .count {
+            color: #f0c8d8;
+            font-size: 0.5rem;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 0.05rem 0.6rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        .game-footer .count span {
+            color: #ffd700;
+            font-weight: 400;
+        }
+
+        /* ====== مودال معما ====== */
+        .riddle-modal {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: rgba(8, 7, 11, 0.92);
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            border-radius: 28px;
+            padding: 1.5rem 1.2rem;
+            z-index: 20;
+            gap: 0.6rem;
+        }
+        .riddle-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .riddle-modal .modal-close {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.8rem;
+            font-size: 1.2rem;
+            color: #4d405f;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            padding: 0.2rem 0.5rem;
+        }
+        .riddle-modal .modal-close:hover {
+            color: #f0c8d8;
+            transform: rotate(90deg);
+        }
+        .riddle-modal .riddle-number {
+            font-size: 0.6rem;
+            color: #6d5b7e;
+            letter-spacing: 0.25em;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 0.1rem 0.8rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        .riddle-modal .riddle-text {
+            font-size: clamp(0.9rem, 2.2vw, 1.3rem);
+            font-weight: 300;
+            color: #e5daf0;
+            text-align: center;
+            max-width: 400px;
+            line-height: 1.8;
+            letter-spacing: 0.03em;
+            padding: 0 0.3rem;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+        .riddle-modal .riddle-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            width: 100%;
+            max-width: 380px;
+            margin-top: 0.3rem;
+        }
+        .riddle-modal .riddle-options .option-btn {
+            background: rgba(30, 24, 44, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 0.6rem 0.4rem;
+            color: #d0c4e0;
+            font-size: clamp(0.7rem, 1.6vw, 0.9rem);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            touch-action: none;
+            min-height: 44px;
+            text-align: center;
+        }
+        .riddle-modal .riddle-options .option-btn:hover {
+            background: rgba(50, 40, 70, 0.5);
+            border-color: rgba(200, 180, 230, 0.1);
+        }
+        .riddle-modal .riddle-options .option-btn:active {
+            transform: scale(0.96);
+        }
+        .riddle-modal .riddle-options .option-btn .opt-emoji {
+            font-size: 1.2rem;
+        }
+        .riddle-modal .riddle-options .option-btn.correct {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.12);
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.08);
+            animation: optionCorrect 0.5s ease;
+        }
+        @keyframes optionCorrect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        .riddle-modal .riddle-options .option-btn.wrong {
+            border-color: #ff1744;
+            background: rgba(255, 23, 68, 0.1);
+            animation: optionWrong 0.5s ease;
+        }
+        @keyframes optionWrong {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .riddle-modal .riddle-options .option-btn.disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .riddle-modal .love-message {
+            font-size: clamp(0.75rem, 1.8vw, 1rem);
+            color: #ff6b9d;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            text-align: center;
+            min-height: 1.6rem;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+        .riddle-modal .love-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ====== صفحه موفقیت ====== */
+        .success-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0.4rem;
+            background: rgba(8, 7, 11, 0.88);
+            backdrop-filter: blur(22px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.9s ease;
+            border-radius: 28px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            z-index: 30;
+        }
+        .success-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .success-overlay .letter-reveal {
+            font-size: clamp(5rem, 14vw, 8rem);
+            font-weight: 200;
+            color: #f0c8d8;
+            text-shadow: 0 0 80px rgba(200, 100, 150, 0.25);
+            animation: letterPop 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+        .success-overlay .msg {
+            font-size: clamp(1rem, 2.8vw, 1.6rem);
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: #e5daf0;
+            max-width: 500px;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+        .success-overlay .sub {
+            font-size: 0.7rem;
+            color: #a697bb;
+            letter-spacing: 0.25em;
+        }
+        .success-overlay .timer-text {
+            font-size: 0.75rem;
+            color: #6d5b7e;
+            letter-spacing: 0.2em;
+            margin-top: 0.3rem;
+        }
+        .success-overlay .heart-big {
+            font-size: 3rem;
+            animation: heartGlow 1.2s infinite alternate;
+            filter: drop-shadow(0 0 40px rgba(255, 107, 157, 0.3));
+        }
+
+        /* ====== کانفتی ====== */
+        .confetti-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            overflow: hidden;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.9;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+        }
+
+        /* ====== ریسپانسیو ====== */
+        @media (max-width: 768px) {
+            .game-container { max-width: 100%; height: 85vh; max-height: 650px; }
+            .game-surface { border-radius: 20px; padding: 0.5rem 0.5rem 0.3rem; }
+            .frames-grid { gap: 10px; }
+            .frame-tile { border-radius: 14px; min-height: 70px; }
+            .frame-tile .frame-content .question-mark { font-size: 2.5rem; }
+            .frame-tile .frame-content .frame-emoji { font-size: 2.2rem; }
+            .heart-progress { width: 50px; height: 50px; font-size: 2.2rem; }
+            .heart-progress .heart-bg { font-size: 2.8rem; }
+            .heart-progress .heart-fill { font-size: 2.8rem; }
+            .found-letters .letter { font-size: 1.1rem; }
+            .found-letters { padding: 0.25rem 0.7rem; min-height: 30px; margin: 0 auto 0.2rem; }
+            .riddle-modal .riddle-text { font-size: 0.9rem; }
+            .riddle-modal .riddle-options .option-btn { font-size: 0.7rem; padding: 0.5rem 0.3rem; min-height: 38px; }
+            .game-footer .hint { font-size: 0.4rem; }
+            .game-footer .count { font-size: 0.45rem; }
+            .success-overlay .letter-reveal { font-size: clamp(4rem, 10vw, 6rem); }
+        }
+
+        @media (max-width: 600px) {
+            .game-container { height: 92vh; max-height: 600px; }
+            .game-surface { border-radius: 16px; padding: 0.4rem 0.4rem 0.2rem; }
+            .frames-grid { gap: 8px; padding: 2px 0 4px; }
+            .frame-tile { border-radius: 12px; min-height: 60px; }
+            .frame-tile .frame-content .question-mark { font-size: 2rem; }
+            .frame-tile .frame-content .frame-emoji { font-size: 1.8rem; }
+            .frame-tile .frame-content .frame-label { font-size: 0.4rem; }
+            .frame-tile .frame-content .frame-desc { font-size: 0.35rem; }
+            .heart-progress { width: 44px; height: 44px; font-size: 1.8rem; }
+            .heart-progress .heart-bg { font-size: 2.4rem; }
+            .heart-progress .heart-fill { font-size: 2.4rem; }
+            .heart-progress .heart-label { font-size: 0.35rem; bottom: -1rem; }
+            .heart-progress .heart-count { font-size: 0.5rem; }
+            .found-letters .letter { font-size: 0.95rem; }
+            .found-letters { padding: 0.2rem 0.6rem; min-height: 26px; gap: 0.15rem; margin: 0 auto 0.15rem; }
+            .found-letters .heart-icon { font-size: 0.5rem; }
+            .riddle-modal { padding: 1rem 0.8rem; border-radius: 16px; }
+            .riddle-modal .riddle-text { font-size: 0.8rem; }
+            .riddle-modal .riddle-options { gap: 0.4rem; }
+            .riddle-modal .riddle-options .option-btn { font-size: 0.6rem; padding: 0.4rem 0.2rem; min-height: 34px; border-radius: 10px; }
+            .riddle-modal .riddle-options .option-btn .opt-emoji { font-size: 0.9rem; }
+            .riddle-modal .love-message { font-size: 0.7rem; min-height: 1.2rem; }
+            .riddle-modal .riddle-number { font-size: 0.5rem; }
+            .game-footer { padding: 0.15rem 0.6rem; gap: 0.7rem; }
+            .game-footer .hint { font-size: 0.35rem; }
+            .game-footer .count { font-size: 0.4rem; padding: 0.05rem 0.4rem; }
+            .progress-bar-wrap { max-width: 160px; height: 2.5px; margin: 0.05rem auto 0.2rem; }
+            .success-overlay { border-radius: 16px; padding: 1.2rem; }
+            .success-overlay .letter-reveal { font-size: clamp(3rem, 8vw, 5rem); }
+            .success-overlay .msg { font-size: 0.9rem; }
+            .timer-text { font-size: 0.65rem; }
+        }
+
+        @media (max-width: 400px) {
+            .game-container { height: 95vh; max-height: 550px; }
+            .game-surface { border-radius: 12px; padding: 0.3rem 0.3rem 0.15rem; }
+            .frames-grid { gap: 6px; }
+            .frame-tile { border-radius: 10px; min-height: 50px; border-width: 1.5px; }
+            .frame-tile .frame-content .question-mark { font-size: 1.6rem; }
+            .frame-tile .frame-content .frame-emoji { font-size: 1.5rem; }
+            .frame-tile .frame-number { font-size: 0.4rem; top: 0.25rem; left: 0.4rem; }
+            .frame-tile.solved::after { font-size: 0.6rem; bottom: 0.2rem; right: 0.3rem; }
+            .heart-progress { width: 38px; height: 38px; font-size: 1.4rem; }
+            .heart-progress .heart-bg { font-size: 2rem; }
+            .heart-progress .heart-fill { font-size: 2rem; }
+            .heart-progress .heart-label { font-size: 0.3rem; bottom: -0.9rem; }
+            .heart-progress .heart-count { font-size: 0.4rem; }
+            .found-letters .letter { font-size: 0.8rem; }
+            .found-letters { padding: 0.15rem 0.5rem; min-height: 22px; gap: 0.1rem; }
+            .found-letters .heart-icon { font-size: 0.4rem; }
+            .riddle-modal .riddle-text { font-size: 0.7rem; }
+            .riddle-modal .riddle-options .option-btn { font-size: 0.55rem; padding: 0.3rem 0.15rem; min-height: 30px; gap: 0.2rem; }
+            .riddle-modal .riddle-options .option-btn .opt-emoji { font-size: 0.8rem; }
+            .game-footer .hint { font-size: 0.3rem; }
+            .game-footer .count { font-size: 0.35rem; }
+            .progress-bar-wrap { max-width: 120px; height: 2px; }
+            .success-overlay { border-radius: 12px; padding: 0.8rem; gap: 0.3rem; }
+            .success-overlay .letter-reveal { font-size: clamp(2.5rem, 7vw, 4rem); }
+            .success-overlay .msg { font-size: 0.8rem; }
+            .timer-text { font-size: 0.55rem; }
+            .riddle-modal { padding: 0.8rem 0.6rem; border-radius: 12px; }
+        }
+
+        @media (max-width: 320px) {
+            .frame-tile .frame-content .question-mark { font-size: 1.2rem; }
+            .frame-tile .frame-content .frame-emoji { font-size: 1.2rem; }
+            .frame-tile { min-height: 40px; }
+            .heart-progress { width: 32px; height: 32px; font-size: 1.2rem; }
+            .heart-progress .heart-bg { font-size: 1.6rem; }
+            .heart-progress .heart-fill { font-size: 1.6rem; }
+            .found-letters .letter { font-size: 0.7rem; }
+            .riddle-modal .riddle-options { grid-template-columns: 1fr 1fr; gap: 0.3rem; }
+            .riddle-modal .riddle-options .option-btn { font-size: 0.5rem; min-height: 26px; padding: 0.2rem 0.1rem; }
+            .game-footer .hint { font-size: 0.25rem; }
+        }
+
+        @media (max-height: 700px) {
+            .game-container { height: 95vh; max-height: 550px; }
+            .frame-tile { min-height: 50px; }
+            .frame-tile .frame-content .question-mark { font-size: 1.8rem; }
+            .frame-tile .frame-content .frame-emoji { font-size: 1.6rem; }
+            .frames-grid { gap: 8px; padding: 2px 0 4px; }
+            .heart-progress { width: 40px; height: 40px; font-size: 1.6rem; }
+            .heart-progress .heart-bg { font-size: 2.2rem; }
+            .heart-progress .heart-fill { font-size: 2.2rem; }
+            .found-letters { min-height: 24px; padding: 0.15rem 0.5rem; }
+            .found-letters .letter { font-size: 0.9rem; }
+            .game-footer { padding: 0.1rem 0.5rem; }
+            .game-footer .hint { font-size: 0.35rem; }
+            .riddle-modal .riddle-text { font-size: 0.8rem; }
+            .riddle-modal .riddle-options .option-btn { min-height: 32px; font-size: 0.6rem; }
+        }
+
+        @media (max-height: 600px) {
+            .game-container { height: 98vh; max-height: 480px; }
+            .frame-tile { min-height: 40px; border-radius: 8px; }
+            .frame-tile .frame-content .question-mark { font-size: 1.4rem; }
+            .frame-tile .frame-content .frame-emoji { font-size: 1.3rem; }
+            .frames-grid { gap: 6px; }
+            .heart-progress { width: 34px; height: 34px; font-size: 1.2rem; }
+            .heart-progress .heart-bg { font-size: 1.8rem; }
+            .heart-progress .heart-fill { font-size: 1.8rem; }
+            .heart-progress .heart-label { font-size: 0.3rem; bottom: -0.8rem; }
+            .found-letters { min-height: 20px; padding: 0.1rem 0.4rem; }
+            .found-letters .letter { font-size: 0.75rem; }
+            .game-footer .hint { font-size: 0.3rem; }
+            .game-footer .count { font-size: 0.35rem; }
+            .riddle-modal .riddle-text { font-size: 0.7rem; }
+            .riddle-modal .riddle-options .option-btn { min-height: 28px; font-size: 0.5rem; padding: 0.2rem 0.1rem; }
+            .riddle-modal .love-message { font-size: 0.6rem; min-height: 1rem; }
+            .progress-bar-wrap { max-width: 100px; height: 2px; }
+            .success-overlay .letter-reveal { font-size: clamp(2.5rem, 6vw, 3.5rem); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-screen">
+        <div class="game-container">
+            <div class="game-surface" id="gameSurface">
+                <div class="glare"></div>
+
+                <!-- ====== حروف پیدا شده ====== -->
+                <div class="found-letters" id="foundLetters">
+                    <span class="heart-icon">💗</span>
+                    <span class="letter found" id="letter0">د</span>
+                    <span class="letter found" id="letter1">خ</span>
+                    <span class="letter found" id="letter2">ت</span>
+                    <span class="letter found" id="letter3">ر</span>
+                    <span class="letter hidden" id="letter4">م</span>
+                    <span class="heart-icon">💗</span>
+                </div>
+
+                <!-- ====== قلب پیشرفت ====== -->
+                <div class="heart-progress-wrap">
+                    <div class="heart-progress" id="heartProgress">
+                        <span class="heart-bg">💗</span>
+                        <span class="heart-fill" id="heartFill" style="clip-path: inset(100% 0 0 0);">💗</span>
+                        <span class="heart-count" id="heartCount">0/4</span>
+                        <span class="heart-label">💕 عشق</span>
+                    </div>
+                </div>
+
+                <!-- ====== نوار پیشرفت ====== -->
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+
+                <!-- ====== گرید قاب‌ها ====== -->
+                <div class="frames-grid" id="framesGrid"></div>
+
+                <!-- ====== فوتر ====== -->
+                <div class="game-footer">
+                    <span class="count">💕 <span id="solveCount">۰</span> از ۴ معما</span>
+                    <span class="hint">✦ قلب رو کامل کن... 💗 ✦</span>
+                </div>
+
+                <!-- ====== مودال معما ====== -->
+                <div class="riddle-modal" id="riddleModal">
+                    <button class="modal-close" id="modalClose">✕</button>
+                    <div class="riddle-number" id="riddleNumber">معمای ۱</div>
+                    <div class="riddle-text" id="riddleText">سوال معما...</div>
+                    <div class="riddle-options" id="riddleOptions"></div>
+                    <div class="love-message" id="loveMessage"></div>
+                </div>
+
+                <!-- ====== صفحه موفقیت ====== -->
+                <div class="success-overlay" id="successOverlay">
+                    <div class="letter-reveal" id="letterReveal">م</div>
+                    <div class="msg">"عشق رو پیدا کردی... 💕"</div>
+                    <div class="sub">✨ ۴ معمای عشق رو حل کردی ✨</div>
+                    <div class="heart-big">💗</div>
+                    <div class="timer-text" id="timerText">در حال انتقال به مرحله بعد...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ====== داده‌های معماها ======
+            const RIDDLES = [{
+                id: 0,
+                title: 'معمای ۱',
+                text: 'من همیشه باهاتم، ولی نمی‌تونیم همدیگه رو لمس کنیم. من تو رو می‌بینم، تو من رو می‌بینی. من کی هستم؟',
+                correct: 0,
+                options: [
+                    { emoji: '🪞', label: 'آینه' },
+                    { emoji: '🌙', label: 'ماه' },
+                    { emoji: '☀️', label: 'خورشید' },
+                    { emoji: '⭐', label: 'ستاره' }
+                ],
+                emoji: '🪞',
+                desc: 'آینه‌ای که همیشه توی اون به خودت نگاه میکنی...'
+            }, {
+                id: 1,
+                title: 'معمای ۲',
+                text: 'من کوچیکم ولی بزرگترین جای دنیا رو دارم. من توی سینه‌ات جا دارم، ولی کل دنیا رو توی خودم نگه میدارم. من چی هستم؟',
+                correct: 0,
+                options: [
+                    { emoji: '💗', label: 'قلب' },
+                    { emoji: '🧠', label: 'مغز' },
+                    { emoji: '👻', label: 'روح' },
+                    { emoji: '💭', label: 'فکر' }
+                ],
+                emoji: '💗',
+                desc: 'قلبی که همیشه برای تو می‌تپه...'
+            }, {
+                id: 2,
+                title: 'معمای ۳',
+                text: 'من بی‌صدام ولی بلندترین صدای دنیا رو دارم. من ناپیدام ولی همه جا هستم. من چی هستم؟',
+                correct: 0,
+                options: [
+                    { emoji: '❤️', label: 'عشق' },
+                    { emoji: '🤝', label: 'دوستی' },
+                    { emoji: '👨‍👩‍👧', label: 'خانواده' },
+                    { emoji: '🌈', label: 'امید' }
+                ],
+                emoji: '❤️',
+                desc: 'عشقی که هیچوقت تموم نمیشه...'
+            }, {
+                id: 3,
+                title: 'معمای ۴',
+                text: 'من توی چشمانت هستم، توی لبخندت، توی صدایت. من تو رو زیبا میکنم. من چی هستم؟',
+                correct: 0,
+                options: [
+                    { emoji: '👀', label: 'نگاه عاشقانه' },
+                    { emoji: '😊', label: 'لبخند' },
+                    { emoji: '🤗', label: 'بغل کردن' },
+                    { emoji: '😘', label: 'بوسه' }
+                ],
+                emoji: '👀',
+                desc: 'نگاهی که همیشه منتظرته...'
+            }];
+
+            const LOVE_MESSAGES = [
+                '🪞 "آینه‌ای که همیشه توی اون به خودت نگاه میکنی..."',
+                '💗 "قلبی که همیشه برای تو می‌تپه..."',
+                '❤️ "عشقی که هیچوقت تموم نمیشه..."',
+                '👀 "نگاهی که همیشه منتظرته..."'
+            ];
+
+            const FRAME_IMAGES = ['🪞', '💗', '❤️', '👀'];
+            const FRAME_LABELS = ['آینه', 'قلب', 'عشق', 'نگاه'];
+
+            // ====== المنت‌ها ======
+            const framesGrid = document.getElementById('framesGrid');
+            const heartFill = document.getElementById('heartFill');
+            const heartCount = document.getElementById('heartCount');
+            const progressFill = document.getElementById('progressFill');
+            const solveCount = document.getElementById('solveCount');
+            const riddleModal = document.getElementById('riddleModal');
+            const riddleNumber = document.getElementById('riddleNumber');
+            const riddleText = document.getElementById('riddleText');
+            const riddleOptions = document.getElementById('riddleOptions');
+            const loveMessage = document.getElementById('loveMessage');
+            const modalClose = document.getElementById('modalClose');
+            const successOverlay = document.getElementById('successOverlay');
+            const timerText = document.getElementById('timerText');
+            const letterM = document.getElementById('letter4');
+
+            let solved = [false, false, false, false];
+            let currentRiddle = 0;
+            let isModalOpen = false;
+            let isLocked = false;
+            let gameCompleted = false;
+            let timerInterval = null;
+
+            // ====== شافل ======
+            function shuffleArray(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            // ====== کانفتی ======
+            function launchConfetti(count = 60, colors = ['#ffd700', '#ff6b9d', '#ffb6c1', '#ffd1dc']) {
+                const container = document.createElement('div');
+                container.className = 'confetti-container';
+                for (let i = 0; i < count; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (4 + Math.random() * 10) + 'px';
+                    confetti.style.height = (4 + Math.random() * 10) + 'px';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    confetti.style.animationDuration = (1.8 + Math.random() * 3) + 's';
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    container.appendChild(confetti);
+                }
+                document.body.appendChild(container);
+                setTimeout(() => container.remove(), 5000);
+            }
+
+            // ====== بروزرسانی قلب ======
+            function updateHeart() {
+                const done = solved.filter(Boolean).length;
+                const pct = (done / RIDDLES.length) * 100;
+                const clip = (100 - pct) + '% 0 0 0';
+
+                heartFill.style.clipPath = `inset(0 ${clip})`;
+
+                if (done === RIDDLES.length) {
+                    heartFill.classList.add('complete');
+                    heartFill.classList.remove('partial');
+                } else if (done > 0) {
+                    heartFill.classList.add('partial');
+                    heartFill.classList.remove('complete');
+                } else {
+                    heartFill.classList.remove('partial', 'complete');
+                }
+
+                heartCount.textContent = `${done}/${RIDDLES.length}`;
+                progressFill.style.width = pct + '%';
+                solveCount.textContent = done;
+
+                // پیام‌های تشویقی
+                if (done === 2) {
+                    showToast('نزدیک شدی... 💕');
+                } else if (done === 3) {
+                    showToast('فقط یه قدم مونده... 💗');
+                }
+            }
+
+            // ====== نمایش پیام موقت ======
+            let toastTimeout = null;
+
+            function showToast(msg) {
+                const existing = document.querySelector('.toast-msg');
+                if (existing) existing.remove();
+                if (toastTimeout) clearTimeout(toastTimeout);
+
+                const div = document.createElement('div');
+                div.className = 'toast-msg';
+                div.textContent = msg;
+                div.style.cssText = `
+                    position: absolute; bottom: 3.5rem; left: 50%; transform: translateX(-50%);
+                    background: rgba(10,8,14,0.7); backdrop-filter: blur(12px);
+                    padding: 0.3rem 1.2rem; border-radius: 40px;
+                    color: #ffd700; font-size: 0.7rem; letter-spacing: 0.1em;
+                    border: 1px solid rgba(255,215,0,0.1);
+                    z-index: 15; white-space: nowrap;
+                    animation: fadeIn 0.4s ease;
+                    font-family: 'Georgia', 'Times New Roman', serif;
+                `;
+                document.getElementById('gameSurface').appendChild(div);
+
+                toastTimeout = setTimeout(() => {
+                    div.style.opacity = '0';
+                    div.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => div.remove(), 500);
+                }, 2000);
+            }
+
+            // ====== ساخت گرید قاب‌ها ======
+            function buildFrames() {
+                framesGrid.innerHTML = '';
+                for (let i = 0; i < RIDDLES.length; i++) {
+                    const frame = document.createElement('div');
+                    frame.className = 'frame-tile';
+                    frame.dataset.index = i;
+                    frame.dataset.solved = 'false';
+
+                    const num = document.createElement('span');
+                    num.className = 'frame-number';
+                    num.textContent = `✦ ${i + 1}`;
+                    frame.appendChild(num);
+
+                    const content = document.createElement('div');
+                    content.className = 'frame-content';
+
+                    const qMark = document.createElement('span');
+                    qMark.className = 'question-mark';
+                    qMark.textContent = '?';
+                    content.appendChild(qMark);
+
+                    const emoji = document.createElement('span');
+                    emoji.className = 'frame-emoji';
+                    emoji.textContent = FRAME_IMAGES[i];
+                    content.appendChild(emoji);
+
+                    const label = document.createElement('span');
+                    label.className = 'frame-label';
+                    label.textContent = FRAME_LABELS[i];
+                    content.appendChild(label);
+
+                    const desc = document.createElement('span');
+                    desc.className = 'frame-desc';
+                    desc.textContent = RIDDLES[i].desc;
+                    content.appendChild(desc);
+
+                    frame.appendChild(content);
+
+                    const glow = document.createElement('div');
+                    glow.className = 'solve-glow';
+                    frame.appendChild(glow);
+
+                    frame.addEventListener('click', () => onFrameClick(i));
+                    frame.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        onFrameClick(i);
+                    }, { passive: false });
+
+                    framesGrid.appendChild(frame);
+                }
+            }
+
+            // ====== کلیک روی قاب ======
+            function onFrameClick(index) {
+                if (isLocked || gameCompleted) return;
+                if (solved[index]) return;
+
+                // بررسی کن که قاب‌های قبلی حل شده باشن
+                for (let i = 0; i < index; i++) {
+                    if (!solved[i]) {
+                        const frame = framesGrid.children[i];
+                        frame.classList.add('wrong-anim');
+                        setTimeout(() => frame.classList.remove('wrong-anim'), 500);
+                        return;
+                    }
+                }
+
+                currentRiddle = index;
+                openRiddle(index);
+            }
+
+            // ====== باز کردن مودال معما ======
+            function openRiddle(index) {
+                const riddle = RIDDLES[index];
+                riddleNumber.textContent = `✦ ${riddle.title} ✦`;
+                riddleText.textContent = riddle.text;
+                loveMessage.textContent = '';
+                loveMessage.classList.remove('show');
+                isModalOpen = true;
+                isLocked = true;
+
+                // گزینه‌ها
+                riddleOptions.innerHTML = '';
+                const shuffledOptions = shuffleArray([...riddle.options]);
+                shuffledOptions.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.dataset.index = i;
+                    btn.innerHTML = `<span class="opt-emoji">${opt.emoji}</span> ${opt.label}`;
+                    btn.addEventListener('click', () => onOptionClick(index, btn, opt.label));
+                    btn.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        onOptionClick(index, btn, opt.label);
+                    }, { passive: false });
+                    riddleOptions.appendChild(btn);
+                });
+
+                riddleModal.classList.add('show');
+            }
+
+            // ====== بستن مودال ======
+            function closeRiddle() {
+                riddleModal.classList.remove('show');
+                isModalOpen = false;
+                isLocked = false;
+            }
+
+            modalClose.addEventListener('click', closeRiddle);
+
+            // ====== کلیک روی گزینه ======
+            function onOptionClick(riddleIndex, btn, label) {
+                if (solved[riddleIndex]) return;
+                if (btn.classList.contains('disabled')) return;
+
+                const riddle = RIDDLES[riddleIndex];
+                const isCorrect = label === riddle.options[riddle.correct].label;
+
+                // غیرفعال کردن همه دکمه‌ها
+                document.querySelectorAll('.option-btn').forEach(b => b.classList.add('disabled'));
+
+                if (isCorrect) {
+                    btn.classList.add('correct');
+                    solveRiddle(riddleIndex);
+                } else {
+                    btn.classList.add('wrong');
+                    setTimeout(() => {
+                        btn.classList.remove('wrong', 'disabled');
+                        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('disabled'));
+                    }, 500);
+                }
+            }
+
+            // ====== حل معما ======
+            function solveRiddle(index) {
+                solved[index] = true;
+
+                // بروزرسانی قاب
+                const frame = framesGrid.children[index];
+                frame.dataset.solved = 'true';
+                frame.classList.add('solved');
+                frame.classList.remove('wrong-anim');
+
+                // نمایش پیام عاشقانه
+                loveMessage.textContent = LOVE_MESSAGES[index];
+                loveMessage.classList.add('show');
+
+                // کانفتی کوچک
+                launchConfetti(30, ['#ffd700', '#ff6b9d', '#ffb6c1']);
+
+                // بروزرسانی قلب
+                updateHeart();
+
+                // بعد از ۱.۵ ثانیه مودال رو ببند
+                setTimeout(() => {
+                    closeRiddle();
+                    // بررسی کامل شدن
+                    if (solved.every(Boolean)) {
+                        setTimeout(() => completeGame(), 400);
+                    }
+                }, 1500);
+            }
+
+            // ====== کامل شدن بازی ======
+            function completeGame() {
+                if (gameCompleted) return;
+                gameCompleted = true;
+
+                // نمایش حرف م
+                letterM.classList.remove('hidden');
+                letterM.classList.add('reveal');
+
+                // کانفتی طلایی سنگین
+                launchConfetti(100, ['#ffd700', '#ff6b9d', '#ffb6c1', '#ffd1dc', '#ff8aac']);
+
+                setTimeout(() => {
+                    successOverlay.classList.add('show');
+                    launchConfetti(80, ['#ffd700', '#ff6b9d', '#ffb6c1', '#ffd1dc']);
+                    startTimer();
+                }, 600);
+            }
+
+            // ====== تایمر شمارش معکوس ======
+            function startTimer() {
+                let countdown = 3;
+                timerText.textContent = `⏳ ${countdown} ثانیه تا مرحله بعد...`;
+                timerInterval = setInterval(() => {
+                    countdown--;
+                    if (countdown > 0) {
+                        timerText.textContent = `⏳ ${countdown} ثانیه تا مرحله بعد...`;
+                    } else {
+                        clearInterval(timerInterval);
+                        timerText.textContent = '🔄 در حال انتقال...';
+                        window.location.href = 'final.html';
+                    }
+                }, 1000);
+            }
+
+            // ====== شروع ======
+            function init() {
+                buildFrames();
+                updateHeart();
+
+                // نمایش حروف قبلی
+                ['letter0', 'letter1', 'letter2', 'letter3'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.classList.remove('hidden');
+                        el.classList.add('found');
+                    }
+                });
+                // حرف م مخفی
+                if (letterM) {
+                    letterM.classList.add('hidden');
+                    letterM.classList.remove('reveal');
+                }
+            }
+
+            init();
+
+            // ====== ریسپانسیو ======
+            window.addEventListener('resize', () => {});
+
+            // ====== بستن مودال با ESC ======
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isModalOpen) {
+                    closeRiddle();
+                }
+            });
+
+        })();
+    </script>
+</body>
+</html>

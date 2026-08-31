@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Samin 🎀</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,200;14..32,300;14..32,400;14..32,600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: 'Vazirmatn', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+body {
+  background: #0b0a0e;
+  color: #ece7f0;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow: hidden;
+  touch-action: none;
+}
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1), visibility 0s 1.2s;
+  will-change: opacity;
+  z-index: 10;
+  pointer-events: none;
+}
+.screen.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1), visibility 0s 0s;
+}
+.screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+#loading-screen {
+  background: radial-gradient(circle at 30% 40%, #1f1b2e, #08070b);
+  z-index: 100;
+  gap: 2.5rem;
+}
+.glow-text {
+  font-size: clamp(2.8rem, 12vw, 5.5rem);
+  font-weight: 200;
+  letter-spacing: 0.2em;
+  background: linear-gradient(135deg, #f7b0d0, #ffd6e8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.9;
+  animation: breathe 4s infinite alternate;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+@keyframes breathe {
+  0% { opacity: 0.5; transform: scale(0.98); letter-spacing: 0.1em; }
+  100% { opacity: 1; transform: scale(1.02); letter-spacing: 0.3em; }
+}
+.loading-sub {
+  font-size: clamp(1rem, 2.5vw, 1.8rem);
+  color: #f0c8d8;
+  letter-spacing: 0.3em;
+  font-weight: 200;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0.8;
+}
+.loading-sub span {
+  display: inline-block;
+  animation: fadeWords 5s infinite;
+}
+@keyframes fadeWords {
+  0%, 20% { opacity: 0; transform: translateY(8px); }
+  40%, 60% { opacity: 1; transform: translateY(0); }
+  80%, 100% { opacity: 0; transform: translateY(-8px); }
+}
+.progress-ring {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: conic-gradient(#f0b0d0 0%, #2a1f3a 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 50px rgba(200, 100, 150, 0.15);
+}
+.progress-ring::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #100d16;
+}
+.progress-ring .label {
+  position: relative;
+  z-index: 2;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: #f0c8d8;
+  font-weight: 300;
+}
+#password-screen {
+  background: radial-gradient(circle at 70% 30%, #18141f, #08070b);
+  z-index: 90;
+  gap: 2rem;
+}
+.password-box {
+  background: rgba(20, 17, 28, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(190, 170, 220, 0.12);
+  border-radius: 48px;
+  padding: 2.8rem 3rem;
+  max-width: 460px;
+  width: 90%;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  transition: box-shadow 0.4s;
+}
+.password-box:focus-within {
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.8), 0 0 60px rgba(200, 100, 150, 0.08);
+}
+.password-box label {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  color: #d0a0b8;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+  font-weight: 300;
+}
+.password-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(180, 160, 210, 0.15);
+  padding-bottom: 0.6rem;
+  transition: border-color 0.4s;
+}
+.password-input-wrap:focus-within {
+  border-color: #f0b0d0;
+}
+.password-input-wrap input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f0e8fc;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+}
+.password-input-wrap input::placeholder {
+  color: #4d405f;
+  font-weight: 200;
+  letter-spacing: 0.15em;
+}
+.password-hint {
+  font-size: 0.65rem;
+  color: #6d5b7e;
+  letter-spacing: 0.15em;
+  margin-top: 1.8rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  padding-top: 1.2rem;
+}
+.password-hint span {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.2rem 1rem;
+  border-radius: 40px;
+  font-weight: 200;
+}
+.btn-magnetic {
+  background: rgba(200, 180, 230, 0.06);
+  border: 1px solid rgba(200, 180, 230, 0.12);
+  color: #ddd0ec;
+  padding: 0.6rem 2.4rem;
+  border-radius: 60px;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  backdrop-filter: blur(4px);
+  margin-top: 1.2rem;
+  align-self: center;
+  background: rgba(200, 100, 150, 0.08);
+}
+.btn-magnetic:hover {
+  background: rgba(200, 100, 150, 0.15);
+  border-color: rgba(200, 100, 150, 0.3);
+  box-shadow: 0 0 40px rgba(200, 100, 150, 0.12);
+  transform: scale(1.02);
+}
+.btn-magnetic:active {
+  transform: scale(0.96);
+}
+.error-shake {
+  animation: shake 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  border-color: #b44a6a !important;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-12px); }
+  60% { transform: translateX(12px); }
+}
+
+#mirror-screen {
+  background: #08070b;
+  z-index: 80;
+  padding: 0.5rem;
+}
+.mirror-container {
+  width: 100%;
+  max-width: 500px;
+  height: 90vh;
+  max-height: 800px;
+  position: relative;
+}
+.mirror-surface {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 40% 40%, #1f1a2a, #0b0910);
+  border-radius: 28px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  position: relative;
+  overflow: hidden;
+}
+.mirror-surface .glare {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.015), transparent 50%);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 2;
+}
+
+/* ====== حروف پیدا شده ====== */
+.found-letters {
+  position: absolute;
+  top: 0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  background: rgba(10, 8, 14, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.4rem 1rem;
+  border-radius: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+  min-height: 40px;
+  min-width: 30px;
+}
+.found-letters .letter {
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: #f0c8d8;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  text-shadow: 0 0 30px rgba(200, 100, 150, 0.15);
+  animation: letterAppear 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.found-letters .letter.hidden {
+  display: none;
+}
+@keyframes letterAppear {
+  0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+  60% { transform: scale(1.3) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); }
+}
+.found-letters .empty-text {
+  color: #3d2f4a;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  font-weight: 200;
+}
+.found-letters .heart-icon {
+  color: #f0b0d0;
+  font-size: 0.7rem;
+  margin: 0 0.15rem;
+  opacity: 0.3;
+}
+
+/* ====== گرید کارت‌ها ====== */
+.puzzle-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 6px;
+  padding: 10px;
+  padding-top: 58px;
+  padding-bottom: 50px;
+  z-index: 3;
+}
+.puzzle-slot {
+  background: rgba(30, 24, 44, 0.3);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.04);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  cursor: pointer;
+  touch-action: none;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.3s, filter 0.3s;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: rgba(180, 160, 210, 0.05);
+  aspect-ratio: 1 / 1.2;
+}
+.puzzle-slot .card-back {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, #2a1f3a, #1a1225);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: rgba(200, 100, 150, 0.2);
+  transition: opacity 0.4s ease;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+.puzzle-slot.matched .card-back {
+  opacity: 0;
+}
+.puzzle-slot .card-front {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.puzzle-slot.matched .card-front {
+  opacity: 1;
+}
+.puzzle-slot.flipped .card-back {
+  opacity: 0;
+}
+.puzzle-slot.flipped .card-front {
+  opacity: 1;
+}
+.puzzle-slot.selected {
+  border-color: rgba(200, 150, 220, 0.5);
+  box-shadow: 0 0 30px rgba(200, 100, 150, 0.15);
+  transform: scale(1.02);
+}
+.puzzle-slot.wrong {
+  animation: wrongPulse 0.5s ease;
+}
+@keyframes wrongPulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(0.3) hue-rotate(20deg); transform: scale(0.95); }
+}
+
+.mirror-hint {
+  position: absolute;
+  bottom: 0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #6d5b7e;
+  font-size: 0.5rem;
+  letter-spacing: 0.25em;
+  background: rgba(10, 8, 14, 0.5);
+  backdrop-filter: blur(6px);
+  padding: 0.2rem 1.2rem;
+  border-radius: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 5;
+}
+.progress-text {
+  position: absolute;
+  bottom: 2.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #4d405f;
+  font-size: 0.45rem;
+  letter-spacing: 0.2em;
+  z-index: 5;
+  pointer-events: none;
+}
+.secret-reveal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.8rem;
+  background: rgba(8, 7, 11, 0.8);
+  backdrop-filter: blur(18px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+  border-radius: 28px;
+  padding: 2rem;
+  text-align: center;
+  z-index: 10;
+}
+.secret-reveal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.secret-reveal .msg {
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: #e5daf0;
+  max-width: 500px;
+}
+.secret-reveal .sub {
+  font-size: 0.6rem;
+  color: #a697bb;
+  letter-spacing: 0.25em;
+}
+.secret-reveal .letter-reveal {
+  font-size: clamp(3.5rem, 10vw, 6rem);
+  font-weight: 200;
+  color: #f0c8d8;
+  text-shadow: 0 0 80px rgba(200, 100, 150, 0.2);
+  animation: letterAppear 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(200, 180, 230, 0.15);
+  color: #cbbddb;
+  padding: 0.4rem 2rem;
+  border-radius: 60px;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+  margin-top: 0.8rem;
+}
+.btn-ghost:hover {
+  background: rgba(200, 180, 230, 0.04);
+  border-color: rgba(200, 180, 230, 0.25);
+}
+
+#final-screen {
+  background: radial-gradient(circle at 30% 20%, #15101f, #050408);
+  z-index: 120;
+  gap: 2rem;
+  padding: 2rem;
+}
+.final-content {
+  max-width: 600px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 2s cubic-bezier(0.23, 1, 0.32, 1), transform 2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.final-content.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.final-content .line {
+  font-size: clamp(1.1rem, 3vw, 2.2rem);
+  font-weight: 200;
+  letter-spacing: 0.05em;
+  color: #dfd6ec;
+  margin: 0.6rem 0;
+}
+.final-content .line.pause {
+  color: #6d5b7e;
+  font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+}
+.final-message {
+  margin-top: 2.4rem;
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: #f0e8fc;
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  padding-top: 2rem;
+  opacity: 0.7;
+  line-height: 1.8;
+}
+
+/* ====== ریسپانسیو موبایل ====== */
+@media (max-width: 600px) {
+  .mirror-container {
+    max-width: 100%;
+    height: 92vh;
+    max-height: 700px;
+  }
+  .mirror-surface {
+    border-radius: 18px;
+  }
+  
+  .puzzle-grid {
+    gap: 4px;
+    padding: 6px;
+    padding-top: 48px;
+    padding-bottom: 40px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+  .puzzle-slot {
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+  }
+  .puzzle-slot .card-back,
+  .puzzle-slot .card-front {
+    border-radius: 6px;
+  }
+  .puzzle-slot .card-back {
+    font-size: 1.2rem;
+  }
+  
+  .mirror-hint {
+    font-size: 0.4rem;
+    bottom: 0.5rem;
+    padding: 0.15rem 0.8rem;
+  }
+  .secret-reveal {
+    border-radius: 18px;
+  }
+  
+  .found-letters {
+    padding: 0.25rem 0.7rem;
+    min-height: 32px;
+    top: 0.5rem;
+    gap: 0.15rem;
+  }
+  .found-letters .letter {
+    font-size: 1rem;
+  }
+  .found-letters .heart-icon {
+    font-size: 0.5rem;
+  }
+  .found-letters .empty-text {
+    font-size: 0.45rem;
+  }
+  
+  .progress-text {
+    bottom: 2.2rem;
+    font-size: 0.4rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .mirror-container {
+    height: 95vh;
+    max-height: 600px;
+  }
+  .puzzle-grid {
+    gap: 3px;
+    padding: 4px;
+    padding-top: 40px;
+    padding-bottom: 34px;
+  }
+  .puzzle-slot {
+    aspect-ratio: 3 / 4;
+  }
+  .found-letters .letter {
+    font-size: 0.85rem;
+  }
+  .found-letters {
+    padding: 0.2rem 0.5rem;
+    min-height: 28px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  .mirror-container {
+    max-width: 600px;
+    height: 85vh;
+    max-height: 700px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .custom-cursor { display: block; }
+}
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: #f0b0d0;
+  border-radius: 50%;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+}
+.cursor-ring {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(200, 180, 230, 0.15);
+  border-radius: 50%;
+  position: absolute;
+  top: -16px;
+  left: -16px;
+  transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s;
+}
+.cursor-ring.hover {
+  width: 48px;
+  height: 48px;
+  top: -24px;
+  left: -24px;
+  border-color: rgba(200, 180, 230, 0.3);
+}
+
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  overflow: hidden;
+}
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  opacity: 0.8;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+
+
+
+
+/* ====== ریسپانسیو کامل ====== */
+
+/* تبلت و موبایل بزرگ */
+@media (max-width: 768px) {
+  .mirror-container {
+    max-width: 100%;
+    height: 85vh;
+    max-height: 650px;
+  }
+  .mirror-surface {
+    border-radius: 20px;
+  }
+  .puzzle-grid {
+    gap: 5px;
+    padding: 8px;
+    padding-top: 55px;
+    padding-bottom: 45px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+  .puzzle-slot {
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+  }
+  .puzzle-slot .card-back,
+  .puzzle-slot .card-front {
+    border-radius: 6px;
+  }
+  .puzzle-slot .card-back {
+    font-size: 1.2rem;
+  }
+  .found-letters {
+    padding: 0.3rem 0.8rem;
+    min-height: 34px;
+    top: 0.5rem;
+    gap: 0.2rem;
+  }
+  .found-letters .letter {
+    font-size: 1.1rem;
+  }
+  .found-letters .heart-icon {
+    font-size: 0.55rem;
+  }
+  .found-letters .empty-text {
+    font-size: 0.5rem;
+  }
+  .mirror-hint {
+    font-size: 0.45rem;
+    bottom: 0.6rem;
+    padding: 0.15rem 0.8rem;
+  }
+  .progress-text {
+    bottom: 2.4rem;
+    font-size: 0.4rem;
+  }
+  .secret-reveal {
+    border-radius: 20px;
+    padding: 1.5rem;
+  }
+  .secret-reveal .letter-reveal {
+    font-size: clamp(3rem, 8vw, 5rem);
+  }
+  .secret-reveal .msg {
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
+  }
+  .btn-ghost {
+    font-size: 0.6rem;
+    padding: 0.3rem 1.5rem;
+  }
+}
+
+/* موبایل متوسط */
+@media (max-width: 600px) {
+  #mirror-screen {
+    padding: 0.3rem;
+  }
+  .mirror-container {
+    height: 92vh;
+    max-height: 600px;
+  }
+  .mirror-surface {
+    border-radius: 16px;
+  }
+  .puzzle-grid {
+    gap: 4px;
+    padding: 6px;
+    padding-top: 48px;
+    padding-bottom: 38px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+  .puzzle-slot {
+    aspect-ratio: 3 / 4;
+    border-radius: 6px;
+    border-width: 1.5px;
+  }
+  .puzzle-slot .card-back,
+  .puzzle-slot .card-front {
+    border-radius: 4px;
+  }
+  .puzzle-slot .card-back {
+    font-size: 1rem;
+  }
+  .found-letters {
+    padding: 0.25rem 0.6rem;
+    min-height: 30px;
+    top: 0.4rem;
+    gap: 0.15rem;
+    border-radius: 40px;
+  }
+  .found-letters .letter {
+    font-size: 0.95rem;
+  }
+  .found-letters .heart-icon {
+    font-size: 0.5rem;
+    margin: 0 0.1rem;
+  }
+  .found-letters .empty-text {
+    font-size: 0.45rem;
+  }
+  .mirror-hint {
+    font-size: 0.4rem;
+    bottom: 0.5rem;
+    padding: 0.12rem 0.6rem;
+  }
+  .progress-text {
+    bottom: 2rem;
+    font-size: 0.35rem;
+  }
+  .secret-reveal {
+    border-radius: 16px;
+    padding: 1.2rem;
+    gap: 0.5rem;
+  }
+  .secret-reveal .letter-reveal {
+    font-size: clamp(2.5rem, 7vw, 4rem);
+  }
+  .secret-reveal .msg {
+    font-size: clamp(0.7rem, 1.8vw, 1rem);
+  }
+  .secret-reveal .sub {
+    font-size: 0.55rem;
+  }
+  .btn-ghost {
+    font-size: 0.55rem;
+    padding: 0.25rem 1.2rem;
+    margin-top: 0.5rem;
+  }
+  .timer-text {
+    font-size: 0.6rem;
+  }
+}
+
+/* موبایل کوچک (زیر 400px) */
+@media (max-width: 400px) {
+  #mirror-screen {
+    padding: 0.2rem;
+  }
+  .mirror-container {
+    height: 95vh;
+    max-height: 550px;
+  }
+  .mirror-surface {
+    border-radius: 12px;
+  }
+  .puzzle-grid {
+    gap: 3px;
+    padding: 4px;
+    padding-top: 40px;
+    padding-bottom: 32px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+  .puzzle-slot {
+    aspect-ratio: 3 / 4;
+    border-radius: 5px;
+    border-width: 1px;
+  }
+  .puzzle-slot .card-back,
+  .puzzle-slot .card-front {
+    border-radius: 3px;
+  }
+  .puzzle-slot .card-back {
+    font-size: 0.8rem;
+  }
+  .found-letters {
+    padding: 0.2rem 0.5rem;
+    min-height: 26px;
+    top: 0.3rem;
+    gap: 0.1rem;
+    border-radius: 30px;
+  }
+  .found-letters .letter {
+    font-size: 0.8rem;
+  }
+  .found-letters .heart-icon {
+    font-size: 0.4rem;
+    margin: 0 0.05rem;
+  }
+  .found-letters .empty-text {
+    font-size: 0.4rem;
+  }
+  .mirror-hint {
+    font-size: 0.35rem;
+    bottom: 0.4rem;
+    padding: 0.1rem 0.5rem;
+  }
+  .progress-text {
+    bottom: 1.7rem;
+    font-size: 0.3rem;
+  }
+  .secret-reveal {
+    border-radius: 12px;
+    padding: 1rem;
+    gap: 0.4rem;
+  }
+  .secret-reveal .letter-reveal {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+  }
+  .secret-reveal .msg {
+    font-size: clamp(0.6rem, 1.5vw, 0.9rem);
+  }
+  .secret-reveal .sub {
+    font-size: 0.5rem;
+  }
+  .btn-ghost {
+    font-size: 0.5rem;
+    padding: 0.2rem 1rem;
+  }
+  .timer-text {
+    font-size: 0.5rem;
+  }
+}
+
+/* صفحه نمایش بسیار کوچک (زیر 320px) */
+@media (max-width: 320px) {
+  .mirror-container {
+    height: 98vh;
+    max-height: 500px;
+  }
+  .puzzle-grid {
+    gap: 2px;
+    padding: 3px;
+    padding-top: 35px;
+    padding-bottom: 28px;
+  }
+  .puzzle-slot {
+    aspect-ratio: 3 / 4;
+    border-radius: 4px;
+  }
+  .found-letters {
+    padding: 0.15rem 0.4rem;
+    min-height: 22px;
+  }
+  .found-letters .letter {
+    font-size: 0.7rem;
+  }
+  .mirror-hint {
+    font-size: 0.3rem;
+    padding: 0.08rem 0.4rem;
+  }
+  .progress-text {
+    font-size: 0.25rem;
+    bottom: 1.5rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="custom-cursor" id="cursor">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+  </div>
+
+  <div class="screen active" id="loading-screen">
+    <div class="glow-text">Samin 🎀</div>
+    <div class="loading-sub">
+      <span>✨</span>
+      <span>loading</span>
+      <span>✦</span>
+      <span>for you</span>
+      <span>✨</span>
+    </div>
+    <div class="progress-ring" id="progressRing">
+      <span class="label" id="progressLabel">0%</span>
+    </div>
+  </div>
+
+  <div class="screen hidden" id="password-screen">
+    <div class="password-box">
+      <label>✦ access code</label>
+      <div class="password-input-wrap">
+        <input type="password" id="passwordInput" placeholder="· · · · ·" autocomplete="off" />
+      </div>
+      <div style="display:flex; justify-content:center;">
+        <button class="btn-magnetic" id="passwordBtn">unlock</button>
+      </div>
+      <div class="password-hint"><span>♡  hint:  what's my name?  ♡</span></div>
+    </div>
+  </div>
+
+
+  <div class="screen hidden" id="final-screen">
+    <div class="final-content" id="finalContent">
+      <div class="line">I could have just sent a message...</div>
+      <div class="line pause">but that felt too ordinary.</div>
+      <div class="line">so I built this.</div>
+      <div class="final-message" id="finalMessage">
+        🌸 for you, Samin 🌸<br />
+        with love, from code
+      </div>
+    </div>
+  </div>
+
+  <div class="secret-reveal" id="secretReveal">
+  <div class="letter-reveal" id="letterReveal">د</div>
+  <div class="msg" id="secretMsg">"حرف اول پیدا شد..."</div>
+  <div class="sub" id="secretSub">✨ مرحله 1 کامل شد ✨</div>
+</div>
+  <script>
+  (function() {
+    const loadingScreen = document.getElementById('loading-screen');
+    const passwordScreen = document.getElementById('password-screen');
+    const mirrorScreen = document.getElementById('mirror-screen');
+    const progressRing = document.getElementById('progressRing');
+    const progressLabel = document.getElementById('progressLabel');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordBtn = document.getElementById('passwordBtn');
+    const puzzleGrid = document.getElementById('puzzleGrid');
+    const secretReveal = document.getElementById('secretReveal');
+    const secretMsg = document.getElementById('secretMsg');
+    const secretSub = document.getElementById('secretSub');
+    const letterReveal = document.getElementById('letterReveal');
+    const continueBtn = document.getElementById('continueBtn');
+    const progressText = document.getElementById('progressText');
+    const cursor = document.getElementById('cursor');
+    const cursorRing = cursor.querySelector('.cursor-ring');
+
+    // ====== حروف کلمه "دخترم" ======
+    let currentLetterIndex = 0;
+    let gameCompleted = false;
+    let redirectTimer = null;
+
+    let loadingProgress = 0;
+    let cards = [];
+    let flippedCards = [];
+    let matchedPairs = 0;
+    const totalPairs = 7;
+    const totalCards = 14;
+    let isLocked = false;
+
+    const imageUrls = [
+      '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg'
+    ];
+
+    function initParticles() {
+      const container = document.createElement('div');
+      container.className = 'particle-container';
+      container.style.cssText =
+        'position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;';
+      for (let i = 0; i < 40; i++) {
+        const el = document.createElement('div');
+        el.style.cssText =
+          `position:absolute;left:${Math.random()*100}%;top:${Math.random()*100}%;` +
+          `width:${1+Math.random()*4}px;height:${1+Math.random()*4}px;` +
+          `background:#f0b0d0;border-radius:50%;filter:blur(1px);opacity:${0.1+Math.random()*0.3};` +
+          `animation:float ${10+Math.random()*20}s ${Math.random()*10}s infinite alternate ease-in-out;`;
+        container.appendChild(el);
+      }
+      document.body.prepend(container);
+      const style = document.createElement('style');
+      style.textContent =
+        `@keyframes float{0%{transform:translate(0,0) scale(0.8);opacity:0.1;}100%{transform:translate(${40+Math.random()*60}px,-${60+Math.random()*80}px) scale(1.2);opacity:0.5;}}`;
+      document.head.appendChild(style);
+    }
+    initParticles();
+
+    function simulateLoading() {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 1 + Math.floor(Math.random() * 5);
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+        }
+        loadingProgress = progress;
+        const deg = (progress / 100) * 360;
+        progressRing.style.background =
+          `conic-gradient(#f0b0d0 ${deg}deg, #2a1f3a ${deg}deg)`;
+        progressLabel.textContent = progress + '%';
+        if (progress === 100) {
+          setTimeout(() => {
+            loadingScreen.classList.remove('active');
+            loadingScreen.classList.add('hidden');
+            passwordScreen.classList.remove('hidden');
+            passwordScreen.classList.add('active');
+            setTimeout(() => passwordInput.focus(), 300);
+          }, 400);
+        }
+      }, 70);
+    }
+    simulateLoading();
+
+    function handlePassword() {
+      const val = passwordInput.value.trim();
+      if (val === 'Samin') {
+        passwordScreen.classList.remove('active');
+        passwordScreen.classList.add('hidden');
+        mirrorScreen.classList.remove('hidden');
+        mirrorScreen.classList.add('active');
+        currentLetterIndex = 0;
+        initGame();
+        return;
+      }
+      passwordInput.classList.add('error-shake');
+      setTimeout(() => passwordInput.classList.remove('error-shake'), 600);
+      passwordInput.value = '';
+      passwordInput.focus();
+    }
+
+    passwordBtn.addEventListener('click', handlePassword);
+    passwordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handlePassword();
+    });
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function launchConfetti() {
+      const container = document.createElement('div');
+      container.className = 'confetti-container';
+      const colors = ['#f7b0d0', '#ffd6e8', '#f0c8d8', '#d4a0c0', '#ff8aac', '#ff6b9d'];
+      for (let i = 0; i < 60; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = (5 + Math.random() * 10) + 'px';
+        confetti.style.height = (5 + Math.random() * 10) + 'px';
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        container.appendChild(confetti);
+      }
+      document.body.appendChild(container);
+      setTimeout(() => container.remove(), 5000);
+    }
+
+    // ====== تابع انتقال به مرحله بعد ======
+    function redirectToLevel2() {
+      let countdown = 3;
+      const timerText = document.getElementById('timerText');
+      if (timerText) {
+        timerText.textContent = `⏳ ${countdown} ثانیه تا مرحله بعد...`;
+      }
+      
+      redirectTimer = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+          if (timerText) {
+            timerText.textContent = `⏳ ${countdown} ثانیه تا مرحله بعد...`;
+          }
+        } else {
+          clearInterval(redirectTimer);
+          if (timerText) {
+            timerText.textContent = '🔄 در حال انتقال...';
+          }
+          // ====== انتقال به level2.html ======
+          window.location.href = 'level2.html';
+        }
+      }, 1000);
+    }
+
+    function revealLetter() {
+      // حرف "د" رو نشون بده
+      const letterEl = document.getElementById('letter0');
+      if (letterEl) {
+        letterEl.classList.remove('hidden');
+        letterEl.classList.add('found', 'highlight');
+      }
+      
+      // صفحه موفقیت
+      letterReveal.textContent = 'د';
+      secretMsg.textContent = '"حرف اول پیدا شد..."';
+      secretSub.textContent = '✨ مرحله ۱ کامل شد ✨';
+      
+      // اضافه کردن تایمر به صفحه موفقیت
+      const timerHtml = document.createElement('div');
+      timerHtml.className = 'timer-text';
+      timerHtml.id = 'timerText';
+      timerHtml.textContent = '⏳ ۳ ثانیه تا مرحله بعد...';
+      secretReveal.appendChild(timerHtml);
+      
+      secretReveal.classList.add('show');
+      launchConfetti();
+      
+      // شروع تایمر برای انتقال
+      setTimeout(() => {
+        redirectToLevel2();
+      }, 1000);
+    }
+
+    function initGame() {
+      puzzleGrid.innerHTML = '';
+      cards = [];
+      flippedCards = [];
+      matchedPairs = 0;
+      gameCompleted = false;
+      isLocked = false;
+      secretReveal.classList.remove('show');
+      
+      // حذف تایمر قبلی اگه وجود داره
+      const oldTimer = document.getElementById('timerText');
+      if (oldTimer) oldTimer.remove();
+      
+      progressText.textContent = `0 / ${totalPairs} pairs found`;
+
+      let cardData = [];
+      for (let i = 0; i < totalPairs; i++) {
+        const imgIndex = i % imageUrls.length;
+        const img = imageUrls[imgIndex];
+        cardData.push({ id: i, img: img });
+        cardData.push({ id: i, img: img });
+      }
+      shuffleArray(cardData);
+
+      const isMobile = window.innerWidth <= 600;
+      const cols = isMobile ? 4 : 7;
+      const rows = Math.ceil(totalCards / cols);
+      puzzleGrid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      puzzleGrid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+      cardData.forEach((data, index) => {
+        const slot = document.createElement('div');
+        slot.className = 'puzzle-slot';
+        slot.dataset.cardId = data.id;
+        slot.dataset.matched = 'false';
+        slot.dataset.flipped = 'false';
+
+        const back = document.createElement('div');
+        back.className = 'card-back';
+        back.textContent = '✦';
+        slot.appendChild(back);
+
+        const front = document.createElement('div');
+        front.className = 'card-front';
+        front.style.backgroundImage = `url(${data.img})`;
+        slot.appendChild(front);
+
+        slot.addEventListener('click', () => onCardClick(slot));
+        slot.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          onCardClick(slot);
+        }, { passive: false });
+
+        puzzleGrid.appendChild(slot);
+        cards.push(slot);
+      });
+    }
+
+    function onCardClick(card) {
+      if (isLocked) return;
+      if (card.dataset.matched === 'true') return;
+      if (card.dataset.flipped === 'true') return;
+      if (flippedCards.length >= 2) return;
+
+      card.dataset.flipped = 'true';
+      card.classList.add('flipped');
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        isLocked = true;
+        const card1 = flippedCards[0];
+        const card2 = flippedCards[1];
+        const id1 = card1.dataset.cardId;
+        const id2 = card2.dataset.cardId;
+
+        if (id1 === id2) {
+          card1.dataset.matched = 'true';
+          card2.dataset.matched = 'true';
+          card1.classList.add('matched');
+          card2.classList.add('matched');
+          matchedPairs++;
+          flippedCards = [];
+          isLocked = false;
+          progressText.textContent = `${matchedPairs} / ${totalPairs} pairs found`;
+
+          if (matchedPairs === totalPairs) {
+            setTimeout(() => {
+              revealLetter();
+            }, 400);
+          }
+        } else {
+          card1.classList.add('wrong');
+          card2.classList.add('wrong');
+          setTimeout(() => {
+            card1.dataset.flipped = 'false';
+            card2.dataset.flipped = 'false';
+            card1.classList.remove('flipped', 'wrong');
+            card2.classList.remove('flipped', 'wrong');
+            flippedCards = [];
+            isLocked = false;
+          }, 600);
+        }
+      }
+    }
+
+    // ====== کرشن ماوس ======
+    window.addEventListener('pointermove', (e) => {
+      if (window.innerWidth < 768) return;
+      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    });
+
+    document.querySelectorAll('button, .puzzle-slot, .btn-magnetic, .btn-ghost').forEach(el => {
+      el.addEventListener('pointerenter', () => {
+        if (window.innerWidth < 768) return;
+        cursorRing.classList.add('hover');
+      });
+      el.addEventListener('pointerleave', () => {
+        if (window.innerWidth < 768) return;
+        cursorRing.classList.remove('hover');
+      });
+    });
+
+    // ====== دکمه Esc برای بستن ======
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && secretReveal.classList.contains('show')) {
+        secretReveal.classList.remove('show');
+      }
+    });
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (window.innerWidth < 600) {
+          document.querySelectorAll('.puzzle-slot').forEach(s => {
+            s.style.touchAction = 'none';
+          });
+        }
+      }, 300);
+    });
+
+  })();
+</script>
+</body>
+</html>

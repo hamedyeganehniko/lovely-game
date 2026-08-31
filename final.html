@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Samin 🎀 - تخته عشق</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,200;14..32,300;14..32,400;14..32,600&family=Vazirmatn:wght@200;300;400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #0b0a0e;
+      color: #ece7f0;
+      font-family: 'Vazirmatn', 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+    }
+
+    #final-screen {
+      width: 100%;
+      height: 100vh;
+      max-height: 950px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      animation: fadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+      padding: 0.3rem;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.97); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ====== هشدار اسکرین‌شات (بزرگ و برجسته) ====== */
+    .screenshot-banner {
+      width: 100%;
+      max-width: 680px;
+      background: rgba(255, 107, 157, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 2px solid rgba(255, 107, 157, 0.15);
+      border-radius: 18px;
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 0.8rem;
+      text-align: center;
+      animation: pulseBanner 2.5s infinite alternate;
+      box-shadow: 0 0 60px rgba(255, 107, 157, 0.05);
+    }
+
+    @keyframes pulseBanner {
+      0% { border-color: rgba(255, 107, 157, 0.1); box-shadow: 0 0 30px rgba(255, 107, 157, 0.02); }
+      100% { border-color: rgba(255, 107, 157, 0.25); box-shadow: 0 0 80px rgba(255, 107, 157, 0.08); }
+    }
+
+    .screenshot-banner .icon-big {
+      font-size: clamp(2rem, 4vw, 3rem);
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    .screenshot-banner .text-big {
+      font-size: clamp(1.1rem, 2.8vw, 1.8rem);
+      font-weight: 300;
+      color: #ff6b9d;
+      letter-spacing: 0.05em;
+      font-family: 'Vazirmatn', 'Inter', sans-serif;
+    }
+
+    .screenshot-banner .text-sub {
+      font-size: clamp(0.55rem, 1.2vw, 0.75rem);
+      color: #a697bb;
+      letter-spacing: 0.1em;
+      font-weight: 200;
+      margin-top: 0.1rem;
+    }
+
+    .screenshot-banner .text-sub span {
+      color: #ff6b9d;
+      font-weight: 300;
+    }
+
+    /* ====== تخته وایت‌برد (بزرگ) ====== */
+    .board-wrapper {
+      width: 100%;
+      max-width: 680px;
+      background: rgba(30, 24, 44, 0.3);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 28px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .board-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, rgba(255, 107, 157, 0.06), rgba(212, 175, 55, 0.04), rgba(255, 107, 157, 0.06));
+      z-index: -1;
+      filter: blur(12px);
+    }
+
+    .board {
+      background: rgba(20, 17, 28, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 1.5rem 1.5rem 1.2rem;
+      position: relative;
+      overflow: hidden;
+      min-height: 520px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      box-shadow: inset 0 2px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ====== هدر تخته ====== */
+    .board-header {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 0.6rem;
+    }
+
+    .board-header h1 {
+      font-size: clamp(1.4rem, 4vw, 2.4rem);
+      font-weight: 200;
+      color: #f0c8d8;
+      letter-spacing: 0.08em;
+      font-family: 'Vazirmatn', 'Georgia', serif;
+      text-shadow: 0 0 40px rgba(200, 100, 150, 0.08);
+    }
+
+    .board-header .sub {
+      font-size: clamp(0.55rem, 1.2vw, 0.75rem);
+      color: #6d5b7e;
+      letter-spacing: 0.15em;
+      margin-top: 0.1rem;
+      font-weight: 200;
+    }
+
+    .board-divider {
+      width: 50px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 157, 0.2), transparent);
+      margin: 0.3rem auto 0.5rem;
+      border-radius: 10px;
+    }
+
+    /* ====== بخش نقاشی (تخته وایت‌برد واقعی) ====== */
+    .draw-section {
+      position: relative;
+      z-index: 1;
+      margin: 0.2rem 0 0.4rem;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      background: rgba(245, 240, 232, 0.04);
+      border-radius: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.15);
+    }
+
+    #drawCanvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      background: rgba(245, 240, 232, 0.02);
+      cursor: crosshair;
+      touch-action: none;
+      border-radius: 14px;
+      min-height: 180px;
+    }
+
+    .canvas-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(0.8rem, 2vw, 1.2rem);
+      color: rgba(255, 255, 255, 0.08);
+      font-weight: 200;
+      letter-spacing: 0.1em;
+      pointer-events: none;
+      font-family: 'Vazirmatn', 'Inter', sans-serif;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .canvas-hint .icon {
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .canvas-controls {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-canvas {
+      padding: 0.25rem 1.2rem;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      background: rgba(255, 255, 255, 0.02);
+      color: #6d5b7e;
+      font-size: clamp(0.45rem, 1vw, 0.6rem);
+      font-family: 'Vazirmatn', 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 200;
+      letter-spacing: 0.05em;
+      backdrop-filter: blur(4px);
+    }
+
+    .btn-canvas:hover {
+      background: rgba(255, 107, 157, 0.06);
+      border-color: rgba(255, 107, 157, 0.1);
+      color: #f0c8d8;
+    }
+
+    .btn-canvas:active {
+      transform: scale(0.94);
+    }
+
+    .btn-canvas.primary {
+      background: rgba(255, 107, 157, 0.08);
+      border-color: rgba(255, 107, 157, 0.08);
+      color: #f0c8d8;
+    }
+
+    .btn-canvas.primary:hover {
+      background: rgba(255, 107, 157, 0.12);
+      border-color: rgba(255, 107, 157, 0.15);
+    }
+
+    .color-picker-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .color-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .color-dot:hover {
+      transform: scale(1.12);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .color-dot.active {
+      border-color: #ff6b9d;
+      box-shadow: 0 0 20px rgba(255, 107, 157, 0.15);
+    }
+
+    /* ====== بخش احساسات ====== */
+    .feeling-section {
+      position: relative;
+      z-index: 1;
+      margin-top: 0.6rem;
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .feeling-section label {
+      display: block;
+      font-size: clamp(0.5rem, 1vw, 0.65rem);
+      color: #6d5b7e;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.2rem;
+      font-weight: 200;
+    }
+
+    .feeling-section textarea {
+      width: 100%;
+      padding: 0.5rem 0.7rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      background: rgba(255, 255, 255, 0.02);
+      color: #ece7f0;
+      font-family: 'Vazirmatn', 'Inter', sans-serif;
+      font-size: clamp(0.65rem, 1.2vw, 0.8rem);
+      resize: none;
+      height: 48px;
+      transition: all 0.3s ease;
+      outline: none;
+      font-weight: 200;
+      letter-spacing: 0.03em;
+      line-height: 1.6;
+    }
+
+    .feeling-section textarea:focus {
+      border-color: rgba(255, 107, 157, 0.15);
+      box-shadow: 0 0 30px rgba(255, 107, 157, 0.03);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .feeling-section textarea::placeholder {
+      color: #4d405f;
+      font-weight: 200;
+    }
+
+    .feeling-sub {
+      text-align: right;
+      font-size: clamp(0.4rem, 0.8vw, 0.5rem);
+      color: #4d405f;
+      margin-top: 0.1rem;
+      padding-right: 0.2rem;
+      letter-spacing: 0.05em;
+      font-weight: 200;
+    }
+
+    /* ====== بخش ایموجی ====== */
+    .emoji-section {
+      position: relative;
+      z-index: 1;
+      margin-top: 0.6rem;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 0.4rem 0.6rem 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .emoji-section .emoji-label {
+      font-size: clamp(0.5rem, 1vw, 0.65rem);
+      color: #6d5b7e;
+      letter-spacing: 0.15em;
+      font-weight: 200;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .emoji-grid {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .emoji-grid .emoji-item {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      padding: 0.1rem 0.1rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 2px solid transparent;
+      touch-action: none;
+      line-height: 1.2;
+      min-width: 2.4rem;
+      min-height: 2.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transform: scale(1);
+      filter: grayscale(0.3);
+    }
+
+    .emoji-grid .emoji-item:hover {
+      transform: scale(1.06);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .emoji-grid .emoji-item:active {
+      transform: scale(0.92);
+    }
+
+    .emoji-grid .emoji-item.selected {
+      transform: scale(1.4);
+      border-color: rgba(255, 107, 157, 0.2);
+      background: rgba(255, 107, 157, 0.06);
+      box-shadow: 0 0 40px rgba(255, 107, 157, 0.08);
+      filter: grayscale(0);
+      z-index: 2;
+    }
+
+    .emoji-grid .emoji-item.dimmed {
+      opacity: 0.12;
+      transform: scale(0.7);
+      filter: grayscale(1);
+      pointer-events: none;
+    }
+
+    @keyframes emojiPop {
+      0% { transform: scale(0.4) rotate(-20deg); opacity: 0; }
+      60% { transform: scale(1.6) rotate(6deg); opacity: 1; }
+      100% { transform: scale(1.4) rotate(0deg); }
+    }
+
+    .emoji-grid .emoji-item.pop {
+      animation: emojiPop 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ====== دکمه‌های پایین ====== */
+    .board-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      padding: 0.45rem 1.6rem;
+      border-radius: 60px;
+      border: none;
+      font-family: 'Vazirmatn', 'Inter', sans-serif;
+      font-size: clamp(0.55rem, 1vw, 0.7rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 107, 157, 0.08);
+      color: #f0c8d8;
+      border: 1px solid rgba(255, 107, 157, 0.06);
+      backdrop-filter: blur(4px);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px) scale(1.02);
+      background: rgba(255, 107, 157, 0.12);
+      border-color: rgba(255, 107, 157, 0.1);
+      box-shadow: 0 8px 40px rgba(255, 107, 157, 0.04);
+    }
+
+    .btn-action:active {
+      transform: scale(0.94);
+    }
+
+    .btn-action.secondary {
+      background: rgba(255, 255, 255, 0.02);
+      color: #6d5b7e;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .btn-action.secondary:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #a697bb;
+      border-color: rgba(255, 255, 255, 0.04);
+    }
+
+    /* ====== کانفتی ====== */
+    .confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0.9;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-100px) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg) scale(0.3); opacity: 0; }
+    }
+
+    /* ====== ریسپانسیو ====== */
+    @media (max-width: 768px) {
+      .board-wrapper { max-width: 100%; padding: 10px; border-radius: 22px; }
+      .board { padding: 1.2rem 1rem 1rem; min-height: 420px; border-radius: 16px; }
+      #drawCanvas { aspect-ratio: 16 / 10; min-height: 140px; }
+      .screenshot-banner { padding: 0.6rem 1rem; }
+      .screenshot-banner .text-big { font-size: clamp(0.9rem, 2.5vw, 1.4rem); }
+    }
+
+    @media (max-width: 600px) {
+      #final-screen { padding: 0.2rem; height: 100vh; max-height: 850px; }
+      .board-wrapper { padding: 8px; border-radius: 18px; }
+      .board { padding: 0.9rem 0.7rem 0.8rem; min-height: 360px; border-radius: 14px; }
+      #drawCanvas { aspect-ratio: 16 / 11; min-height: 110px; border-radius: 10px; }
+      .board-header h1 { font-size: clamp(1.1rem, 3.5vw, 1.6rem); }
+      .board-header .sub { font-size: 0.5rem; }
+      .screenshot-banner { padding: 0.5rem 0.8rem; border-radius: 14px; margin-bottom: 0.5rem; }
+      .screenshot-banner .text-big { font-size: clamp(0.8rem, 2vw, 1.1rem); }
+      .screenshot-banner .text-sub { font-size: 0.45rem; }
+      .screenshot-banner .icon-big { font-size: 1.6rem; }
+      .emoji-grid .emoji-item { font-size: clamp(1.2rem, 3vw, 1.6rem); min-width: 1.8rem; min-height: 1.8rem; }
+      .emoji-grid .emoji-item.selected { transform: scale(1.3); }
+      .feeling-section textarea { height: 38px; font-size: 0.6rem; padding: 0.4rem 0.6rem; }
+      .btn-action { padding: 0.3rem 1rem; font-size: 0.5rem; }
+      .board-actions { gap: 0.4rem; margin-top: 0.5rem; }
+      .canvas-hint { font-size: 0.7rem; }
+      .canvas-hint .icon { font-size: 1.2rem; }
+      .color-dot { width: 16px; height: 16px; }
+      .btn-canvas { padding: 0.2rem 0.8rem; font-size: 0.4rem; }
+    }
+
+    @media (max-width: 400px) {
+      .board-wrapper { padding: 5px; border-radius: 14px; }
+      .board { padding: 0.6rem 0.5rem 0.6rem; min-height: 300px; border-radius: 12px; }
+      #drawCanvas { aspect-ratio: 16 / 12; min-height: 90px; }
+      .screenshot-banner { padding: 0.4rem 0.6rem; border-radius: 12px; }
+      .screenshot-banner .text-big { font-size: clamp(0.65rem, 1.8vw, 0.9rem); }
+      .screenshot-banner .icon-big { font-size: 1.3rem; }
+      .screenshot-banner .text-sub { font-size: 0.4rem; }
+      .board-header h1 { font-size: clamp(0.9rem, 3vw, 1.2rem); }
+      .emoji-grid { gap: 0.3rem; }
+      .emoji-grid .emoji-item { font-size: clamp(1rem, 2.5vw, 1.3rem); min-width: 1.5rem; min-height: 1.5rem; border-radius: 8px; }
+      .emoji-grid .emoji-item.selected { transform: scale(1.2); }
+      .feeling-section { padding: 0.4rem 0.5rem; }
+      .feeling-section textarea { height: 32px; font-size: 0.55rem; padding: 0.3rem 0.5rem; }
+      .btn-action { padding: 0.2rem 0.7rem; font-size: 0.45rem; gap: 0.2rem; }
+    }
+
+    @media (max-height: 700px) {
+      .board { min-height: 320px; padding: 0.8rem 0.8rem 0.6rem; }
+      #drawCanvas { min-height: 100px; }
+      .screenshot-banner { padding: 0.4rem 0.8rem; margin-bottom: 0.4rem; }
+      .screenshot-banner .text-big { font-size: clamp(0.8rem, 2vw, 1.2rem); }
+      .screenshot-banner .icon-big { font-size: 1.4rem; }
+      .emoji-grid .emoji-item { font-size: clamp(1.1rem, 2.5vw, 1.6rem); }
+      .feeling-section textarea { height: 34px; }
+      .board-actions { margin-top: 0.4rem; }
+    }
+
+    @media (max-height: 600px) {
+      .board { min-height: 260px; padding: 0.5rem 0.6rem 0.4rem; }
+      #drawCanvas { min-height: 80px; aspect-ratio: 16 / 10; }
+      .screenshot-banner { padding: 0.3rem 0.6rem; border-radius: 10px; }
+      .screenshot-banner .text-big { font-size: clamp(0.6rem, 1.5vw, 0.9rem); }
+      .screenshot-banner .icon-big { font-size: 1.1rem; }
+      .board-header h1 { font-size: clamp(0.8rem, 2.5vw, 1.1rem); }
+      .board-header .sub { font-size: 0.4rem; }
+      .emoji-section { padding: 0.2rem 0.4rem 0.3rem; }
+      .emoji-grid .emoji-item { font-size: clamp(0.9rem, 2vw, 1.2rem); min-width: 1.3rem; min-height: 1.3rem; }
+      .feeling-section { padding: 0.3rem 0.4rem; }
+      .feeling-section textarea { height: 28px; font-size: 0.5rem; padding: 0.2rem 0.4rem; }
+      .btn-action { padding: 0.15rem 0.6rem; font-size: 0.4rem; }
+      .canvas-hint { font-size: 0.5rem; }
+      .canvas-hint .icon { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="final-screen">
+    <!-- ====== هشدار اسکرین‌شات (بزرگ و برجسته) ====== -->
+    <div class="screenshot-banner">
+      <span class="icon-big">📸</span>
+      <div class="text-big">حتماً از این صفحه اسکرین‌شات بگیر!</div>
+      <div class="text-sub">بفرست برای من تا ببینم چقدر قشنگ کشیدی... <span>💕</span></div>
+    </div>
+
+    <!-- ====== تخته وایت‌برد ====== -->
+    <div class="board-wrapper">
+      <div class="board" id="board">
+        <!-- ====== هدر ====== -->
+        <div class="board-header">
+          <h1>🎀samin🎀</h1>
+          <div class="board-divider"></div>
+          <div class="sub">کلمه‌ای که ۵ مرحله براش جنگیدی رو روی تخته بنویس...</div>
+        </div>
+
+        <!-- ====== بخش نقاشی ====== -->
+        <div class="draw-section">
+          <div class="canvas-wrapper">
+            <canvas id="drawCanvas"></canvas>
+            <div class="canvas-hint" id="canvasHint">
+              <span class="icon">✍️</span>
+              اینجا بنویس...<br />
+              <span style="font-size:0.7em;color:rgba(255,255,255,0.04);">د ✦ خ ✦ ت ✦ ر ✦ م</span>
+            </div>
+          </div>
+          <div class="canvas-controls">
+            <div class="color-picker-wrap">
+              <span class="color-dot active" style="background:#ff6b9d;" data-color="#ff6b9d"></span>
+              <span class="color-dot" style="background:#ffd700;" data-color="#ffd700"></span>
+              <span class="color-dot" style="background:#6bcfff;" data-color="#6bcfff"></span>
+              <span class="color-dot" style="background:#6bff9d;" data-color="#6bff9d"></span>
+              <span class="color-dot" style="background:#ffffff;" data-color="#ffffff"></span>
+            </div>
+            <button class="btn-canvas" id="clearCanvasBtn">🗑️ پاک کن</button>
+            <button class="btn-canvas primary" id="undoCanvasBtn">↩️ برگرد</button>
+          </div>
+        </div>
+
+        <!-- ====== بخش احساسات ====== -->
+        <div class="feeling-section">
+          <label>💬 احساست رو بنویس...</label>
+          <textarea id="feelingInput" placeholder="از این بازی چی حس کردی؟..." maxlength="200"></textarea>
+          <div class="feeling-sub">از ته دل بنویس... 💕</div>
+        </div>
+
+        <!-- ====== بخش ایموجی ====== -->
+        <div class="emoji-section">
+          <span class="emoji-label">✨ یک ایموجی انتخاب کن ✨</span>
+          <div class="emoji-grid" id="emojiGrid">
+            <span class="emoji-item" data-emoji="💗">💗</span>
+            <span class="emoji-item" data-emoji="💕">💕</span>
+            <span class="emoji-item" data-emoji="💖">💖</span>
+            <span class="emoji-item" data-emoji="🌸">🌸</span>
+            <span class="emoji-item" data-emoji="🎀">🎀</span>
+            <span class="emoji-item" data-emoji="💘">💘</span>
+          </div>
+        </div>
+
+        <!-- ====== دکمه‌ها ====== -->
+        <div class="board-actions">
+          <button class="btn-action" id="restartBtn">🔄 دوباره بازی کن</button>
+          <button class="btn-action secondary" id="homeBtn">🏠 برگشت به صفحه اصلی</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ====== کانفتی ======
+      function launchConfetti(count = 60, colors = ['#ff6b9d', '#ffb6c1', '#ffd1dc', '#ff8aac', '#ffd700', '#ffa5b9']) {
+        const container = document.createElement('div');
+        container.className = 'confetti-container';
+        for (let i = 0; i < count; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.width = (4 + Math.random() * 10) + 'px';
+          confetti.style.height = (4 + Math.random() * 10) + 'px';
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+          confetti.style.animationDuration = (1.8 + Math.random() * 3) + 's';
+          confetti.style.animationDelay = Math.random() * 2.5 + 's';
+          container.appendChild(confetti);
+        }
+        document.body.appendChild(container);
+        setTimeout(() => container.remove(), 5000);
+      }
+
+      // ====== راه‌اندازی Canvas ======
+      const canvas = document.getElementById('drawCanvas');
+      const ctx = canvas.getContext('2d');
+      const canvasHint = document.getElementById('canvasHint');
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+      let currentColor = '#ff6b9d';
+      let lineWidth = 4;
+      let drawHistory = [];
+      let historyIndex = -1;
+
+      function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        const width = rect.width - 4;
+        const aspectRatio = 16 / 9;
+        const height = width / aspectRatio;
+        canvas.width = width * 2;
+        canvas.height = height * 2;
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.scale(2, 2);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = currentColor;
+        // Restore history
+        redrawHistory();
+      }
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches?.[0]?.clientX || 0) - rect.left;
+        const y = (e.clientY || e.touches?.[0]?.clientY || 0) - rect.top;
+        return { x, y };
+      }
+
+      function startDrawing(e) {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getPos(e);
+        lastX = pos.x;
+        lastY = pos.y;
+        canvasHint.style.opacity = '0';
+        // شروع یک مسیر جدید
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+      }
+
+      function draw(e) {
+        e.preventDefault();
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        lastX = pos.x;
+        lastY = pos.y;
+      }
+
+      function stopDrawing(e) {
+        if (isDrawing) {
+          isDrawing = false;
+          // ذخیره تاریخچه
+          const imageData = canvas.toDataURL();
+          // حذف آینده تاریخچه
+          drawHistory = drawHistory.slice(0, historyIndex + 1);
+          drawHistory.push(imageData);
+          historyIndex = drawHistory.length - 1;
+        }
+      }
+
+      // ====== رنگ‌ها ======
+      document.querySelectorAll('.color-dot').forEach(dot => {
+        dot.addEventListener('click', function() {
+          document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+          this.classList.add('active');
+          currentColor = this.dataset.color;
+          ctx.strokeStyle = currentColor;
+        });
+      });
+
+      // ====== پاک کردن ======
+      document.getElementById('clearCanvasBtn').addEventListener('click', function() {
+        ctx.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
+        drawHistory = [];
+        historyIndex = -1;
+        canvasHint.style.opacity = '1';
+      });
+
+      // ====== برگرد ======
+      document.getElementById('undoCanvasBtn').addEventListener('click', function() {
+        if (historyIndex > 0) {
+          historyIndex--;
+          redrawHistory();
+        }
+      });
+
+      function redrawHistory() {
+        if (historyIndex >= 0 && historyIndex < drawHistory.length) {
+          const img = new Image();
+          img.onload = function() {
+            ctx.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
+            ctx.drawImage(img, 0, 0, canvas.width / 2, canvas.height / 2);
+          };
+          img.src = drawHistory[historyIndex];
+          canvasHint.style.opacity = '0';
+        } else {
+          ctx.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
+          canvasHint.style.opacity = '1';
+        }
+      }
+
+      // ====== رویدادهای ماوس ======
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseleave', stopDrawing);
+
+      // ====== رویدادهای تاچ ======
+      canvas.addEventListener('touchstart', startDrawing, { passive: false });
+      canvas.addEventListener('touchmove', draw, { passive: false });
+      canvas.addEventListener('touchend', stopDrawing, { passive: false });
+
+      // ====== ریسایز ======
+      window.addEventListener('resize', resizeCanvas);
+
+      // ====== ایموجی ======
+      let emojiSelected = false;
+      document.querySelectorAll('.emoji-item').forEach(item => {
+        item.addEventListener('click', function() {
+          if (emojiSelected && this.classList.contains('selected')) {
+            this.classList.remove('selected', 'pop');
+            document.querySelectorAll('.emoji-item').forEach(el => {
+              el.classList.remove('dimmed');
+              el.style.opacity = '1';
+              el.style.pointerEvents = 'auto';
+              el.style.transform = 'scale(1)';
+            });
+            emojiSelected = false;
+            return;
+          }
+
+          document.querySelectorAll('.emoji-item').forEach(el => {
+            el.classList.remove('selected', 'dimmed', 'pop');
+            el.style.opacity = '1';
+            el.style.pointerEvents = 'auto';
+            el.style.transform = 'scale(1)';
+          });
+
+          this.classList.add('selected', 'pop');
+          document.querySelectorAll('.emoji-item').forEach(el => {
+            if (el !== this) {
+              el.classList.add('dimmed');
+              el.style.opacity = '0.12';
+              el.style.pointerEvents = 'none';
+              el.style.transform = 'scale(0.7)';
+            }
+          });
+
+          emojiSelected = true;
+          launchConfetti(20, ['#ff6b9d', '#ffd700']);
+        });
+
+        item.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          this.click();
+        }, { passive: false });
+      });
+
+      // ====== دکمه‌ها ======
+      document.getElementById('restartBtn').addEventListener('click', function() {
+        window.location.reload();
+      });
+
+      document.getElementById('homeBtn').addEventListener('click', function() {
+        window.location.href = 'index.html';
+      });
+
+      // ====== مقداردهی اولیه ======
+      resizeCanvas();
+      // ذخیره حالت اولیه
+      drawHistory.push(canvas.toDataURL());
+      historyIndex = 0;
+
+      // کانفتی خوش‌آمدگویی
+      setTimeout(() => {
+        launchConfetti(35, ['#ff6b9d', '#ffb6c1', '#ffd1dc']);
+      }, 600);
+
+      // ====== جلوگیری از اسکرول ======
+      document.addEventListener('touchmove', function(e) {
+        if (e.target.closest('.board')) {
+          if (e.target.tagName === 'TEXTAREA') return;
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      console.log('✨ تخته عشق آماده است! هر چی دوست داری روی تخته بنویس...');
+    })();
+  </script>
+</body>
+</html>
