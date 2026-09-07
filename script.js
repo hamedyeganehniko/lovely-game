@@ -1,4 +1,3 @@
-
 let currentLevel = 1;
 const totalLevels = 5;
 let redirectTimer = null;
@@ -45,7 +44,7 @@ document.getElementById('passwordInput').addEventListener('keydown', (e) => {
 
 function handlePassword() {
     const input = document.getElementById('passwordInput');
-    if (input.value.trim() === 'Samin') {
+    if (input.value.trim() === 'Fatimaa') {
         showScreen('game-screen');
         document.querySelectorAll('#level1-container .letter.hidden').forEach(el => {
             el.classList.remove('hidden');
@@ -195,7 +194,6 @@ function initLevel1() {
             isLocked = true;
             const card1 = flippedCards[0];
             const card2 = flippedCards[1];
-
             if (card1.dataset.cardId === card2.dataset.cardId) {
                 card1.dataset.matched = 'true';
                 card2.dataset.matched = 'true';
@@ -282,7 +280,6 @@ function initLevel2() {
             el.style.color = '';
         }
     });
-
     lettersGrid.innerHTML = '';
     progressText.textContent = '0 / 3 کلمه پیدا شد';
     successOverlay.classList.remove('show');
@@ -492,7 +489,6 @@ function initLevel3() {
         gameCompleted = true;
         tile.classList.add('found-success');
         launchConfetti();
-
         const letterEl = document.getElementById('l3-letter2');
         if (letterEl) {
             letterEl.classList.remove('hidden');
@@ -586,7 +582,6 @@ function initLevel4() {
         tile.dataset.side = data.side;
         tile.dataset.color = data.color;
         tile.dataset.matched = 'false';
-
         const halfSpan = document.createElement('span');
         halfSpan.className = 'half-heart';
         halfSpan.textContent = data.display;
@@ -1192,5 +1187,8 @@ function initFinalScreen() {
             e.preventDefault();
         }
     }, { passive: false });
+
+    console.log('✨ تخته عشق آماده است!');
 }
 
+console.log('🎀 Fatimaa Game loaded successfully!');
