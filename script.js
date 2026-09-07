@@ -1,14 +1,8 @@
-// ================================================================
-//                    SCRIPT.JS - نسخه کامل
-//         شامل تمام مراحل ۱ تا ۵ + صفحه نهایی
-// ================================================================
 
-// ===================== متغیرهای عمومی =====================
 let currentLevel = 1;
 const totalLevels = 5;
 let redirectTimer = null;
 
-// ===================== مدیریت صفحات =====================
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => {
         s.classList.remove('active');
@@ -21,7 +15,6 @@ function showScreen(screenId) {
     }
 }
 
-// ===================== لودینگ =====================
 function simulateLoading() {
     let progress = 0;
     const ring = document.getElementById('progressRing');
@@ -45,7 +38,6 @@ function simulateLoading() {
 }
 simulateLoading();
 
-// ===================== پسورد =====================
 document.getElementById('passwordBtn').addEventListener('click', handlePassword);
 document.getElementById('passwordInput').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handlePassword();
@@ -55,7 +47,6 @@ function handlePassword() {
     const input = document.getElementById('passwordInput');
     if (input.value.trim() === 'Samin') {
         showScreen('game-screen');
-        // حروف مرحله ۱ رو نشون بده
         document.querySelectorAll('#level1-container .letter.hidden').forEach(el => {
             el.classList.remove('hidden');
             el.classList.add('found');
@@ -69,7 +60,6 @@ function handlePassword() {
     }
 }
 
-// ===================== مدیریت مراحل =====================
 function showLevel(levelNum) {
     document.querySelectorAll('.level-container').forEach(el => {
         el.classList.remove('active-level');
@@ -83,7 +73,6 @@ function showLevel(levelNum) {
     currentLevel = levelNum;
 }
 
-// ===================== تابع کانفتی =====================
 function launchConfetti(count = 60, colors = ['#ff6b9d', '#ffb6c1', '#ffd1dc', '#ff8aac', '#ffd700', '#ffa5b9']) {
     const container = document.createElement('div');
     container.className = 'confetti-container';
@@ -103,7 +92,6 @@ function launchConfetti(count = 60, colors = ['#ff6b9d', '#ffb6c1', '#ffd1dc', '
     setTimeout(() => container.remove(), 5000);
 }
 
-// ===================== شافل آرایه =====================
 function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -112,12 +100,10 @@ function shuffleArray(arr) {
     return arr;
 }
 
-// ===================== انتقال به مرحله بعد =====================
 function goToNextLevel() {
     if (currentLevel < totalLevels) {
         const nextLevel = currentLevel + 1;
         showLevel(nextLevel);
-        // راه‌اندازی مرحله بعد
         switch(nextLevel) {
             case 2: initLevel2(); break;
             case 3: initLevel3(); break;
@@ -125,7 +111,6 @@ function goToNextLevel() {
             case 5: initLevel5(); break;
         }
     } else {
-        // اگه مرحله ۵ تموم شد بره به صفحه نهایی
         setTimeout(() => {
             showScreen('final-screen');
             initFinalScreen();
@@ -133,9 +118,6 @@ function goToNextLevel() {
     }
 }
 
-// ================================================================
-//                    سطح ۱: بازی حافظه (کارت‌ها)
-// ================================================================
 function initLevel1() {
     const puzzleGrid = document.getElementById('puzzleGrid');
     const progressText = document.getElementById('progressTextLevel1');
@@ -227,19 +209,17 @@ function initLevel1() {
                 if (matchedPairs === totalPairs) {
                     gameCompleted = true;
                     setTimeout(() => {
-                        // نمایش حرف "د"
                         const letterEl = document.getElementById('l1-letter0');
                         if (letterEl) {
                             letterEl.classList.remove('hidden');
                             letterEl.classList.add('found');
                         }
-                        letterReveal.textContent = 'د';
+                        letterReveal.textContent = 'ه';
                         successMsg.textContent = '"حرف اول پیدا شد..."';
                         successSub.textContent = '✨ مرحله ۱ کامل شد ✨';
                         successOverlay.classList.add('show');
                         launchConfetti();
                         
-                        // تایمر برای رفتن به مرحله بعد
                         let countdown = 3;
                         timerText.textContent = `⏳ ${countdown} ثانیه تا مرحله بعد...`;
                         if (redirectTimer) clearInterval(redirectTimer);
@@ -271,17 +251,14 @@ function initLevel1() {
     }
 }
 
-// ================================================================
-//                    سطح ۲: پیدا کردن کلمات
-// ================================================================
 function initLevel2() {
     const targetWords = [
-        { word: 'خوژگل', color: '#ff6b9d' },
-        { word: 'عشقم', color: '#6bcfff' },
-        { word: 'زندگیم', color: '#6bff9d' }
+        { word: 'قلبم', color: '#ff6b9d' },
+        { word: 'لانگ', color: '#6bcfff' },
+        { word: 'مهربون', color: '#6bff9d' }
     ];
 
-    const allLetters = ['خ', 'و', 'ژ', 'گ', 'ل', 'ع', 'ش', 'ق', 'م', 'ز', 'ن', 'د', 'گ', 'ی', 'م'];
+    const allLetters = ['ق', 'ل', 'ب', 'م', 'ل', 'ا', 'ن', 'گ', 'م', 'ه', 'ر', 'ب', 'و', 'ن'];
     const lettersGrid = document.getElementById('lettersGrid');
     const progressText = document.getElementById('progressTextLevel2');
     const successOverlay = document.getElementById('successOverlay');
@@ -296,7 +273,6 @@ function initLevel2() {
     let totalFound = 0;
     let gameCompleted = false;
 
-    // ریست کلمات پیدا شده
     ['word1', 'word2', 'word3'].forEach((id, i) => {
         const el = document.getElementById(id);
         if (el) {
@@ -311,7 +287,6 @@ function initLevel2() {
     progressText.textContent = '0 / 3 کلمه پیدا شد';
     successOverlay.classList.remove('show');
 
-    // ایجاد حروف
     let letters = [...allLetters];
     while (letters.length < 30) {
         letters.push(allLetters[Math.floor(Math.random() * allLetters.length)]);
@@ -348,7 +323,6 @@ function initLevel2() {
         letterTiles.push(tile);
     });
 
-    // هایلایت کردن حروف مرتبط با کلمات
     targetWords.forEach((tw, wordIdx) => {
         const chars = tw.word.split('');
         const indices = [];
@@ -415,13 +389,12 @@ function initLevel2() {
                 if (totalFound === 3) {
                     gameCompleted = true;
                     setTimeout(() => {
-                        // نمایش حرف "خ"
                         const letterEl = document.getElementById('l2-letter1');
                         if (letterEl) {
                             letterEl.classList.remove('hidden');
                             letterEl.classList.add('found');
                         }
-                        letterReveal.textContent = 'خ';
+                        letterReveal.textContent = 'م';
                         successMsg.textContent = '"حرف دوم پیدا شد..."';
                         successSub.textContent = '✨ مرحله ۲ کامل شد ✨';
                         successOverlay.classList.add('show');
@@ -457,9 +430,6 @@ function initLevel2() {
     }
 }
 
-// ================================================================
-//                    سطح ۳: پیدا کردن ایموجی متفاوت
-// ================================================================
 function initLevel3() {
     const emojiGrid = document.getElementById('emojiGrid');
     const attemptSpan = document.getElementById('attemptCount');
@@ -483,7 +453,6 @@ function initLevel3() {
     gameCompleted = false;
     successOverlay.classList.remove('show');
 
-    // ساخت آرایه ایموجی‌ها
     let emojis = [];
     for (let i = 0; i < TOTAL_EMOJIS; i++) {
         emojis.push(MAIN_EMOJI);
@@ -520,12 +489,10 @@ function initLevel3() {
             return;
         }
 
-        // درست
         gameCompleted = true;
         tile.classList.add('found-success');
         launchConfetti();
 
-        // نمایش حرف "ت"
         const letterEl = document.getElementById('l3-letter2');
         if (letterEl) {
             letterEl.classList.remove('hidden');
@@ -533,7 +500,7 @@ function initLevel3() {
         }
 
         setTimeout(() => {
-            letterReveal.textContent = 'ت';
+            letterReveal.textContent = 'س';
             successMsg.textContent = '"حرف سوم پیدا شد..."';
             successSub.textContent = '✨ مرحله ۳ کامل شد ✨';
             successOverlay.classList.add('show');
@@ -556,9 +523,6 @@ function initLevel3() {
     }
 }
 
-// ================================================================
-//                    سطح ۴: جور کردن نیمه قلب‌ها
-// ================================================================
 function initLevel4() {
     const PAIRS = [
         { id: 0, color: '#ff6b9d', left: '◀', right: '▶', emoji: '💗' },
@@ -606,7 +570,6 @@ function initLevel4() {
     successOverlay.classList.remove('show');
     updateProgress();
 
-    // ساخت جفت‌ها
     let halfCards = [];
     PAIRS.forEach((pair, idx) => {
         halfCards.push({ pairId: idx, side: 'left', display: pair.left, color: pair.color, emoji: pair.emoji });
@@ -704,7 +667,6 @@ function initLevel4() {
                 if (matchedPairs === PAIRS.length) {
                     gameCompleted = true;
                     setTimeout(() => {
-                        // نمایش حرف "ر"
                         const letterEl = document.getElementById('l4-letter3');
                         if (letterEl) {
                             letterEl.classList.remove('hidden');
@@ -745,9 +707,6 @@ function initLevel4() {
     }
 }
 
-// ================================================================
-//                    سطح ۵: معمای عشق
-// ================================================================
 function initLevel5() {
     const RIDDLES = [{
         id: 0,
@@ -844,7 +803,6 @@ function initLevel5() {
     solveCount.textContent = '0';
     successOverlay.classList.remove('show');
 
-    // ساخت قاب‌ها
     for (let i = 0; i < RIDDLES.length; i++) {
         const frame = document.createElement('div');
         frame.className = 'frame-tile';
@@ -1013,7 +971,6 @@ function initLevel5() {
         if (gameCompleted) return;
         gameCompleted = true;
 
-        // نمایش حرف "م"
         const letterEl = document.getElementById('l5-letter4');
         if (letterEl) {
             letterEl.classList.remove('hidden');
@@ -1045,7 +1002,6 @@ function initLevel5() {
         }, 600);
     }
 
-    // بستن مودال با ESC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && isModalOpen) {
             closeRiddle();
@@ -1053,9 +1009,6 @@ function initLevel5() {
     });
 }
 
-// ================================================================
-//                    صفحه نهایی (تخته نقاشی)
-// ================================================================
 function initFinalScreen() {
     const canvas = document.getElementById('drawCanvas');
     const ctx = canvas.getContext('2d');
@@ -1140,7 +1093,6 @@ function initFinalScreen() {
         }
     }
 
-    // ====== رویدادهای نقاشی ======
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
@@ -1150,7 +1102,6 @@ function initFinalScreen() {
     canvas.addEventListener('touchmove', draw, { passive: false });
     canvas.addEventListener('touchend', stopDrawing, { passive: false });
 
-    // ====== رنگ‌ها ======
     document.querySelectorAll('.color-dot').forEach(dot => {
         dot.addEventListener('click', function() {
             document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
@@ -1160,7 +1111,6 @@ function initFinalScreen() {
         });
     });
 
-    // ====== پاک کردن ======
     document.getElementById('clearCanvasBtn').addEventListener('click', function() {
         ctx.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
         drawHistory = [];
@@ -1168,7 +1118,6 @@ function initFinalScreen() {
         canvasHint.style.opacity = '1';
     });
 
-    // ====== برگرد ======
     document.getElementById('undoCanvasBtn').addEventListener('click', function() {
         if (historyIndex > 0) {
             historyIndex--;
@@ -1176,7 +1125,6 @@ function initFinalScreen() {
         }
     });
 
-    // ====== ایموجی ======
     document.querySelectorAll('.emoji-grid-final .emoji-item').forEach(item => {
         item.addEventListener('click', function() {
             if (emojiSelected && this.classList.contains('selected')) {
@@ -1218,20 +1166,16 @@ function initFinalScreen() {
         }, { passive: false });
     });
 
-    // ====== مقداردهی اولیه ======
     resizeCanvas();
     drawHistory.push(canvas.toDataURL());
     historyIndex = 0;
 
-    // کانفتی خوش‌آمدگویی
     setTimeout(() => {
         launchConfetti(35, ['#ff6b9d', '#ffb6c1', '#ffd1dc']);
     }, 600);
 
-    // ====== ریسایز ======
     window.addEventListener('resize', resizeCanvas);
 
-    // ====== دکمه‌ها ======
     document.getElementById('restartBtn')?.addEventListener('click', () => {
         location.reload();
     });
@@ -1242,19 +1186,11 @@ function initFinalScreen() {
         document.getElementById('passwordInput').focus();
     });
 
-    // جلوگیری از اسکرول
     document.addEventListener('touchmove', function(e) {
         if (e.target.closest('.board')) {
             if (e.target.tagName === 'TEXTAREA') return;
             e.preventDefault();
         }
     }, { passive: false });
-
-    console.log('✨ تخته عشق آماده است!');
 }
-
-// ================================================================
-//                    راه‌اندازی اولیه
-// ================================================================
-// همه چیز از لودینگ شروع میشه و بعدش پسورد
-console.log('🎀 Samin Game loaded successfully!');
+```
