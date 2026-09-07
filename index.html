@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Samin 🎀</title>
-    <!-- لینک به فایل استایل جداگانه -->
+    <title>Fatimaa 🎀</title>
     <link rel="stylesheet" href="style.css" />
-    <!-- لینک به فونت‌ها (اختیاری، ولی بهتره بمونه) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,200;14..32,300;14..32,400;14..32,600&family=Vazirmatn:wght@200;300;400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-    <!-- ====== صفحه ۱: لودینگ ====== -->
     <div id="loading-screen" class="screen active">
-        <div class="glow-text">Samin 🎀</div>
+        <div class="glow-text">Fatimaa 🎀</div>
         <div class="loading-sub">
             <span>✨</span><span>loading</span><span>✦</span><span>for you</span><span>✨</span>
         </div>
@@ -24,7 +21,6 @@
         </div>
     </div>
 
-    <!-- ====== صفحه ۲: پسورد ====== -->
     <div id="password-screen" class="screen hidden">
         <div class="password-box">
             <label>✦ access code</label>
@@ -38,68 +34,56 @@
         </div>
     </div>
 
-    <!-- ====== صفحه ۳: بازی اصلی (مراحل ۱ تا ۵) ====== -->
     <div id="game-screen" class="screen hidden">
         <div class="game-container">
             <div class="game-surface" id="gameSurface">
                 <div class="glare"></div>
 
-                <!-- ====== مرحله ۱: بازی حافظه (کارت‌ها) ====== -->
                 <div id="level1-container" class="level-container active-level">
-                    <!-- حروف پیدا شده -->
                     <div class="found-letters" id="foundLettersLevel1">
                         <span class="heart-icon">💗</span>
-                        <span class="letter hidden" id="l1-letter0">د</span>
-                        <span class="letter hidden" id="l1-letter1">خ</span>
-                        <span class="letter hidden" id="l1-letter2">ت</span>
+                        <span class="letter hidden" id="l1-letter0">ه</span>
+                        <span class="letter hidden" id="l1-letter1">م</span>
+                        <span class="letter hidden" id="l1-letter2">س</span>
                         <span class="letter hidden" id="l1-letter3">ر</span>
                         <span class="letter hidden" id="l1-letter4">م</span>
                         <span class="heart-icon">💗</span>
                     </div>
-                    <!-- گرید کارت‌ها -->
                     <div class="puzzle-grid" id="puzzleGrid"></div>
-                    <!-- اطلاعات مرحله -->
                     <div class="progress-text" id="progressTextLevel1">0 / 7 جفت پیدا شد</div>
                     <div class="game-hint">✦ جفت‌ها رو پیدا کن ✦</div>
                 </div>
 
-                <!-- ====== مرحله ۲: پیدا کردن کلمات ====== -->
                 <div id="level2-container" class="level-container hidden-level">
-                    <!-- حروف پیدا شده -->
                     <div class="found-letters" id="foundLettersLevel2">
                         <span class="heart-icon">💗</span>
-                        <span class="letter found" id="l2-letter0">د</span>
-                        <span class="letter hidden" id="l2-letter1">خ</span>
-                        <span class="letter hidden" id="l2-letter2">ت</span>
+                        <span class="letter found" id="l2-letter0">ه</span>
+                        <span class="letter hidden" id="l2-letter1">م</span>
+                        <span class="letter hidden" id="l2-letter2">س</span>
                         <span class="letter hidden" id="l2-letter3">ر</span>
                         <span class="letter hidden" id="l2-letter4">م</span>
                         <span class="heart-icon">💗</span>
                     </div>
-                    <!-- کلمات پیدا شده -->
                     <div class="found-words" id="foundWords">
                         <span class="word-badge" id="word1">❓ کلمه ۱</span>
                         <span class="word-badge" id="word2">❓ کلمه ۲</span>
                         <span class="word-badge" id="word3">❓ کلمه ۳</span>
                     </div>
-                    <!-- گرید حروف -->
                     <div class="letters-grid" id="lettersGrid"></div>
                     <div class="progress-text" id="progressTextLevel2">0 / 3 کلمه پیدا شد</div>
                     <div class="game-hint">✦ کلمات پنهان رو پیدا کن ✦</div>
                 </div>
 
-                <!-- ====== مرحله ۳: پیدا کردن ایموجی متفاوت ====== -->
                 <div id="level3-container" class="level-container hidden-level">
-                    <!-- حروف پیدا شده -->
                     <div class="found-letters" id="foundLettersLevel3">
                         <span class="heart-icon">💗</span>
-                        <span class="letter found" id="l3-letter0">د</span>
-                        <span class="letter found" id="l3-letter1">خ</span>
-                        <span class="letter hidden" id="l3-letter2">ت</span>
+                        <span class="letter found" id="l3-letter0">ه</span>
+                        <span class="letter found" id="l3-letter1">م</span>
+                        <span class="letter hidden" id="l3-letter2">س</span>
                         <span class="letter hidden" id="l3-letter3">ر</span>
                         <span class="letter hidden" id="l3-letter4">م</span>
                         <span class="heart-icon">💗</span>
                     </div>
-                    <!-- گرید ایموجی‌ها -->
                     <div class="emoji-grid-wrapper">
                         <div class="emoji-grid" id="emojiGrid"></div>
                     </div>
@@ -109,24 +93,20 @@
                     </div>
                 </div>
 
-                <!-- ====== مرحله ۴: جور کردن نیمه قلب‌ها ====== -->
                 <div id="level4-container" class="level-container hidden-level">
-                    <!-- حروف پیدا شده -->
                     <div class="found-letters" id="foundLettersLevel4">
                         <span class="heart-icon">💗</span>
-                        <span class="letter found" id="l4-letter0">د</span>
-                        <span class="letter found" id="l4-letter1">خ</span>
-                        <span class="letter found" id="l4-letter2">ت</span>
+                        <span class="letter found" id="l4-letter0">ه</span>
+                        <span class="letter found" id="l4-letter1">م</span>
+                        <span class="letter found" id="l4-letter2">س</span>
                         <span class="letter hidden" id="l4-letter3">ر</span>
                         <span class="letter hidden" id="l4-letter4">م</span>
                         <span class="heart-icon">💗</span>
                     </div>
-                    <!-- نوار پیشرفت -->
                     <div class="progress-bar-wrap">
                         <div class="progress-bar-fill" id="progressFill"></div>
                     </div>
                     <div class="progress-label" id="progressLabel">💗 ۰ از ۶ قلب کامل شد</div>
-                    <!-- گرید قلب‌ها -->
                     <div class="heart-grid-wrapper">
                         <div class="heart-grid" id="heartGrid"></div>
                     </div>
@@ -134,25 +114,21 @@
                         <span class="pair-count">💕 <span id="pairCount">۰</span> / ۶</span>
                         <span class="hint">✦ نیمه‌ات را پیدا کن... 💗 ✦</span>
                     </div>
-                    <!-- پیام عاشقانه -->
                     <div class="love-message" id="loveMessage">
                         <span class="heart-emoji">💗</span> <span id="loveText">نیمه‌ات را پیدا کردی...</span>
                     </div>
                 </div>
 
-                <!-- ====== مرحله ۵: معمای عشق ====== -->
                 <div id="level5-container" class="level-container hidden-level">
-                    <!-- حروف پیدا شده -->
                     <div class="found-letters" id="foundLettersLevel5">
                         <span class="heart-icon">💗</span>
-                        <span class="letter found" id="l5-letter0">د</span>
-                        <span class="letter found" id="l5-letter1">خ</span>
-                        <span class="letter found" id="l5-letter2">ت</span>
+                        <span class="letter found" id="l5-letter0">ه</span>
+                        <span class="letter found" id="l5-letter1">م</span>
+                        <span class="letter found" id="l5-letter2">س</span>
                         <span class="letter found" id="l5-letter3">ر</span>
                         <span class="letter hidden" id="l5-letter4">م</span>
                         <span class="heart-icon">💗</span>
                     </div>
-                    <!-- قلب پیشرفت -->
                     <div class="heart-progress-wrap">
                         <div class="heart-progress" id="heartProgress">
                             <span class="heart-bg">💗</span>
@@ -164,13 +140,11 @@
                     <div class="progress-bar-wrap">
                         <div class="progress-bar-fill" id="progressFill5"></div>
                     </div>
-                    <!-- گرید قاب‌ها -->
                     <div class="frames-grid" id="framesGrid"></div>
                     <div class="game-footer">
                         <span class="count">💕 <span id="solveCount">۰</span> از ۴ معما</span>
                         <span class="hint">✦ قلب رو کامل کن... 💗 ✦</span>
                     </div>
-                    <!-- مودال معما -->
                     <div class="riddle-modal" id="riddleModal">
                         <button class="modal-close" id="modalClose">✕</button>
                         <div class="riddle-number" id="riddleNumber">معمای ۱</div>
@@ -180,9 +154,8 @@
                     </div>
                 </div>
 
-                <!-- ====== صفحه موفقیت هر مرحله (Overlay) ====== -->
                 <div class="success-overlay" id="successOverlay">
-                    <div class="letter-reveal" id="letterReveal">د</div>
+                    <div class="letter-reveal" id="letterReveal">ه</div>
                     <div class="msg" id="successMsg">"حرف اول پیدا شد..."</div>
                     <div class="sub" id="successSub">✨ مرحله ۱ کامل شد ✨</div>
                     <div class="timer-text" id="timerText">در حال انتقال به مرحله بعد...</div>
@@ -192,7 +165,6 @@
         </div>
     </div>
 
-    <!-- ====== صفحه ۴: تخته نهایی ====== -->
     <div id="final-screen" class="screen hidden">
         <div class="screenshot-banner">
             <span class="icon-big">📸</span>
@@ -202,7 +174,7 @@
         <div class="board-wrapper">
             <div class="board" id="board">
                 <div class="board-header">
-                    <h1>🎀samin🎀</h1>
+                    <h1>🎀fatimaa🎀</h1>
                     <div class="board-divider"></div>
                     <div class="sub">کلمه‌ای که ۵ مرحله براش جنگیدی رو روی تخته بنویس...</div>
                 </div>
@@ -212,7 +184,7 @@
                         <div class="canvas-hint" id="canvasHint">
                             <span class="icon">✍️</span>
                             اینجا بنویس...<br />
-                            <span style="font-size:0.7em;color:rgba(255,255,255,0.04);">د ✦ خ ✦ ت ✦ ر ✦ م</span>
+                            <span style="font-size:0.7em;color:rgba(255,255,255,0.04);">ه ✦ م ✦ س ✦ ر ✦ م</span>
                         </div>
                     </div>
                     <div class="canvas-controls">
@@ -251,7 +223,6 @@
         </div>
     </div>
 
-    <!-- ====== لینک به فایل جاوااسکریپت ====== -->
     <script src="script.js"></script>
 </body>
-</html>
+                </html>
